@@ -1,5 +1,6 @@
 name: MarketCraft
 version: '${version}'
 main: com.marketcraft.MarketCraft
+authors: [Slimerblue22]
 api-version: '1.20'
-load: STARTUP
+load: POSTWORLD
