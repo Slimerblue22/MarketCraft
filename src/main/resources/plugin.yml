@@ -4,3 +4,11 @@ main: com.marketcraft.MarketCraft
 authors: [Slimerblue22]
 api-version: '1.20'
 load: POSTWORLD
+commands:
+  marketcraftdebug:
+    description: Command for controlling the debug system
+    aliases: [mcd]
+permissions:
+  marketcraft.debug:
+    description: Permission for debug commands
+    default: op
