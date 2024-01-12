@@ -43,6 +43,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final VersionCommand versionCommand;
     private final OpenStorageCommand openStorageCommand;
     private final RemoveStorageCommand removeStorageCommand;
+    private static final String[] COMMANDS = {"help", "version", "openstorage", "removestorage"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager) {
         this.removeStorageCommand = new RemoveStorageCommand(playerVaultManager);
@@ -82,8 +83,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            String[] commands = {"help", "version", "openstorage"};
-            for (String cmd : commands) {
+            for (String cmd : COMMANDS) {
                 if (cmd.startsWith(args[0].toLowerCase())) {
                     completions.add(cmd);
                 }
@@ -95,8 +95,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     private void handleUnknownCommand(CommandSender sender) {
         sender.sendMessage(Component.text("Unknown command. Use one of the following:", NamedTextColor.RED));
-        String[] commands = {"help", "version"};
-        for (String cmd : commands) {
+        for (String cmd : COMMANDS) {
             sender.sendMessage(Component.text("/marketcraft " + cmd, NamedTextColor.GRAY));
         }
     }
