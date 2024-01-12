@@ -14,7 +14,7 @@ public class RemoveStorageCommand {
     }
 
     public boolean handleRemoveStorageCommand(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("marketcraft.wip")) { // TODO: Replace this with an admin permission
+        if (!sender.hasPermission("marketcraft.admin")) {
             sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
             return false;
         }

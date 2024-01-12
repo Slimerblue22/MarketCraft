@@ -53,7 +53,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (!sender.hasPermission("marketcraft.wip")) {
+        if (!sender.hasPermission("marketcraft.use")) {
             sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
             return false;
         }
