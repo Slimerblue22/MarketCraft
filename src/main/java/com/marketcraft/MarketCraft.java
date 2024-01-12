@@ -13,6 +13,7 @@ public final class MarketCraft extends JavaPlugin {
         // Plugin startup logic
         pluginVersion = this.getDescription().getVersion();
         Objects.requireNonNull(getCommand("marketcraftdebug")).setExecutor(new DebugManager.ToggleDebugCommand());
+        Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler());
     }
 
     @Override

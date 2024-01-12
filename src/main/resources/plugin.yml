@@ -8,7 +8,13 @@ commands:
   marketcraftdebug:
     description: Command for controlling the debug system
     aliases: [mcd]
+  marketcraft:
+    description: WIP stuff
+    aliases: [mc]
 permissions:
   marketcraft.debug:
     description: Permission for debug commands
+    default: op
+  marketcraft.wip:
+    description: WIP stuff
     default: op
