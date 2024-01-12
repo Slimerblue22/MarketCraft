@@ -1,7 +1,10 @@
 package com.marketcraft;
 
+import com.marketcraft.Commands.OpenStorageCommand;
 import com.marketcraft.Commands.HelpCommand;
+import com.marketcraft.Commands.RemoveStorageCommand;
 import com.marketcraft.Commands.VersionCommand;
+import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -38,10 +41,14 @@ import java.util.List;
 public class CommandHandler implements CommandExecutor, TabCompleter {
     private final HelpCommand helpCommand;
     private final VersionCommand versionCommand;
+    private final OpenStorageCommand openStorageCommand;
+    private final RemoveStorageCommand removeStorageCommand;
 
-    public CommandHandler() {
+    public CommandHandler(PlayerVaultManager playerVaultManager) {
+        this.removeStorageCommand = new RemoveStorageCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
+        this.openStorageCommand = new OpenStorageCommand(playerVaultManager);
     }
 
     @Override
@@ -61,6 +68,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         return switch (subCommand) {
             case "help" -> helpCommand.handleHelpCommand(sender);
             case "version" -> versionCommand.handleVersionCommand(sender);
+            case "openstorage" -> openStorageCommand.handleOpenStorageCommand(sender);
+            case "removestorage" -> removeStorageCommand.handleRemoveStorageCommand(sender, args);
             default -> {
                 handleUnknownCommand(sender);
                 yield false;
@@ -73,7 +82,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
-            String[] commands = {"help", "version"};
+            String[] commands = {"help", "version", "openstorage"};
             for (String cmd : commands) {
                 if (cmd.startsWith(args[0].toLowerCase())) {
                     completions.add(cmd);
