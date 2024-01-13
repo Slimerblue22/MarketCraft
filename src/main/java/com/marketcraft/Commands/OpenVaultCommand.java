@@ -7,6 +7,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+ * Handles the 'openvault' subcommand of the /marketcraft command set.
+ * This class is responsible for opening a player's vault, creating a new vault if one doesn't exist.
+ * It leverages the PlayerVaultManager for checking and managing vault existence and PlayerVaultGUI
+ * for displaying the vault's contents to the player. This command is intended for player use and
+ * not for console.
+ */
 public class OpenVaultCommand {
 
     private final PlayerVaultManager playerVaultManager;

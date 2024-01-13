@@ -5,6 +5,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Handles the 'removevault' subcommand of the /marketcraft command set.
+ * This class allows administrators with the appropriate permissions to remove a player's vault
+ * based on the player's UUID. The command ensures that only authorized users can perform this
+ * action and validates the provided UUID before attempting to remove the associated vault.
+ */
 public class RemoveVaultCommand {
 
     private final PlayerVaultManager playerVaultManager;

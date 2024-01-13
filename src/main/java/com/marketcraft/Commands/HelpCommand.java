@@ -5,6 +5,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Handles the 'help' subcommand of the /marketcraft command set.
+ * This class provides a help message to users, offering an overview of the MarketCraft plugin,
+ * its purpose, and basic instructions for use. The message includes a welcoming greeting and
+ * essential information to guide users in their initial interaction with the plugin.
+ */
 public class HelpCommand {
 
     public boolean handleHelpCommand(CommandSender sender) {

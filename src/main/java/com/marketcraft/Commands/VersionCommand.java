@@ -7,6 +7,11 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Handles the 'version' subcommand of the /marketcraft command set.
+ * This class is responsible for displaying the current version of the MarketCraft plugin,
+ * along with additional information such as the author and a link to the GitHub repository.
+ */
 public class VersionCommand {
 
     public boolean handleVersionCommand(CommandSender sender) {

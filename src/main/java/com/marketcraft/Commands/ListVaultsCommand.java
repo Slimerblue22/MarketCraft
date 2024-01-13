@@ -7,6 +7,13 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 
+/**
+ * Handles the 'listvaults' subcommand of the /marketcraft command set.
+ * This class allows administrators with the appropriate permissions to list all player vaults.
+ * It supports pagination to display the vaults in a manageable format, showing a set number
+ * of entries per page. The command ensures that only authorized users can view the list of vaults,
+ * and it provides functionality to navigate through the vaults in a paginated manner.
+ */
 public class ListVaultsCommand {
 
     private final PlayerVaultManager playerVaultManager;

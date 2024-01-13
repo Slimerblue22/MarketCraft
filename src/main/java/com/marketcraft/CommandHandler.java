@@ -51,6 +51,18 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
     }
 
+    /**
+     * Executes the given /marketcraft command.
+     * This method handles the primary command logic for the /marketcraft command set.
+     * All commands require the 'marketcraft.use' permission. Some specific subcommands
+     * require additional permissions, such as 'marketcraft.admin'.
+     *
+     * @param sender  The sender of the command, typically a player or the console.
+     * @param command The command being executed.
+     * @param label   The alias of the command used.
+     * @param args    The arguments passed with the command.
+     * @return true if the command was successfully executed, false otherwise.
+     */
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!sender.hasPermission("marketcraft.use")) {
@@ -78,6 +90,18 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         };
     }
 
+    /**
+     * Provides tab completion options for the /marketcraft command.
+     * This method is triggered whenever a player starts typing a /marketcraft command
+     * and hits the tab key. It offers a list of possible completions based on the current
+     * input.
+     *
+     * @param sender  The sender of the command.
+     * @param command The command being executed.
+     * @param alias   The alias used for the command.
+     * @param args    The arguments provided with the command.
+     * @return A List of Strings containing possible tab completions.
+     */
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> completions = new ArrayList<>();
@@ -93,6 +117,13 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         return completions;
     }
 
+    /**
+     * Handles cases where an unknown command is entered in the /marketcraft command set.
+     * It informs the sender that the command is unrecognized and displays a list of available
+     * commands within the /marketcraft command set.
+     *
+     * @param sender The sender of the command.
+     */
     private void handleUnknownCommand(CommandSender sender) {
         sender.sendMessage(Component.text("Unknown command. Use one of the following:", NamedTextColor.RED));
         for (String cmd : COMMANDS) {
