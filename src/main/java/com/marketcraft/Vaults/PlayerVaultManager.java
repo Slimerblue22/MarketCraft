@@ -63,6 +63,10 @@ public class PlayerVaultManager {
         return null;
     }
 
+    public File[] listAllVaults() {
+        return vaultsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+    }
+
     public void savePlayerVault(Player player, Inventory vaultInventory) {
         String playerName = player.getName();
 

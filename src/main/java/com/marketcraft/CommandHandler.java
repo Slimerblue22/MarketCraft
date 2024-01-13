@@ -1,9 +1,6 @@
 package com.marketcraft;
 
-import com.marketcraft.Commands.OpenVaultCommand;
-import com.marketcraft.Commands.HelpCommand;
-import com.marketcraft.Commands.RemoveVaultCommand;
-import com.marketcraft.Commands.VersionCommand;
+import com.marketcraft.Commands.*;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -43,13 +40,15 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final VersionCommand versionCommand;
     private final OpenVaultCommand openVaultCommand;
     private final RemoveVaultCommand removeVaultCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault"};
+    private final ListVaultsCommand listVaultsCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager);
+        this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
     }
 
     @Override
@@ -70,7 +69,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "help" -> helpCommand.handleHelpCommand(sender);
             case "version" -> versionCommand.handleVersionCommand(sender);
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
-            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args);
+            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs markcraft.admin
+            case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs markcraft.admin
             default -> {
                 handleUnknownCommand(sender);
                 yield false;
