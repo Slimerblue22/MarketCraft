@@ -1,8 +1,8 @@
 package com.marketcraft;
 
-import com.marketcraft.Commands.OpenStorageCommand;
+import com.marketcraft.Commands.OpenVaultCommand;
 import com.marketcraft.Commands.HelpCommand;
-import com.marketcraft.Commands.RemoveStorageCommand;
+import com.marketcraft.Commands.RemoveVaultCommand;
 import com.marketcraft.Commands.VersionCommand;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -41,15 +41,15 @@ import java.util.List;
 public class CommandHandler implements CommandExecutor, TabCompleter {
     private final HelpCommand helpCommand;
     private final VersionCommand versionCommand;
-    private final OpenStorageCommand openStorageCommand;
-    private final RemoveStorageCommand removeStorageCommand;
-    private static final String[] COMMANDS = {"help", "version", "openstorage", "removestorage"};
+    private final OpenVaultCommand openVaultCommand;
+    private final RemoveVaultCommand removeVaultCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager) {
-        this.removeStorageCommand = new RemoveStorageCommand(playerVaultManager);
+        this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
-        this.openStorageCommand = new OpenStorageCommand(playerVaultManager);
+        this.openVaultCommand = new OpenVaultCommand(playerVaultManager);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         return switch (subCommand) {
             case "help" -> helpCommand.handleHelpCommand(sender);
             case "version" -> versionCommand.handleVersionCommand(sender);
-            case "openstorage" -> openStorageCommand.handleOpenStorageCommand(sender);
-            case "removestorage" -> removeStorageCommand.handleRemoveStorageCommand(sender, args);
+            case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
+            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args);
             default -> {
                 handleUnknownCommand(sender);
                 yield false;
