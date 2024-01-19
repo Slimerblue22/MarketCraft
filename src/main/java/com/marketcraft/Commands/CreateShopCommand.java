@@ -1,6 +1,6 @@
 package com.marketcraft.Commands;
 
-import com.marketcraft.Shops.PlayerShopGUI;
+import com.marketcraft.Shops.GUI.PlayerShopGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
-package com.marketcraft.Shops;
+package com.marketcraft.Shops.GUI;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
