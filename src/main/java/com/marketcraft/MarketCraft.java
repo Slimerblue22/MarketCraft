@@ -1,5 +1,6 @@
 package com.marketcraft;
 
+import com.marketcraft.Shops.ShopSetupListener;
 import com.marketcraft.Util.DebugManager;
 import com.marketcraft.Vaults.GUI.VaultInventoryListener;
 import com.marketcraft.Vaults.PlayerVaultManager;
@@ -16,6 +17,7 @@ public final class MarketCraft extends JavaPlugin {
         pluginVersion = this.getDescription().getVersion();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
         getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager), this);
+        getServer().getPluginManager().registerEvents(new ShopSetupListener(), this);
         Objects.requireNonNull(getCommand("marketcraftdebug")).setExecutor(new DebugManager.ToggleDebugCommand());
         Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler(playerVaultManager));
     }
