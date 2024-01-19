@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class PlayerShopGUI {
+public class PlayerShopSetupGUI {
 
     private static final int INVENTORY_SIZE = 54; // 6 rows x 9 columns for a double chest
 

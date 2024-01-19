@@ -1,16 +1,16 @@
 package com.marketcraft.Commands;
 
-import com.marketcraft.Shops.GUI.PlayerShopGUI;
+import com.marketcraft.Shops.GUI.PlayerShopSetupGUI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class CreateShopCommand {
-    private final PlayerShopGUI playerShopGUI;
+    private final PlayerShopSetupGUI playerShopSetupGUI;
 
     public CreateShopCommand() {
-        this.playerShopGUI = new PlayerShopGUI();
+        this.playerShopSetupGUI = new PlayerShopSetupGUI();
     }
 
     public boolean handleCreateShopCommand(CommandSender sender) {
@@ -20,7 +20,7 @@ public class CreateShopCommand {
         }
 
         sender.sendMessage(Component.text("Opening shop config.", NamedTextColor.GREEN));
-        playerShopGUI.openShopSetupGUI(player);
+        playerShopSetupGUI.openShopSetupGUI(player);
         return true;
     }
 }
