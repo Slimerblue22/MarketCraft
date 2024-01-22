@@ -39,6 +39,10 @@ public class PlayerShopManager {
         }
     }
 
+    public File[] listAllShops() {
+        return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+    }
+
     private boolean doesPlayerShopExist(UUID playerUUID) {
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
         return playerShopFile.exists();

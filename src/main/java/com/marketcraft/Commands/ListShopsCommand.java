@@ -1,0 +1,64 @@
+package com.marketcraft.Commands;
+
+import com.marketcraft.Shops.PlayerShopManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.CommandSender;
+
+import java.io.File;
+
+public class ListShopsCommand {
+
+    private static final int ENTRIES_PER_PAGE = 10;
+    private final PlayerShopManager playerShopManager;
+
+    public ListShopsCommand(PlayerShopManager playerShopManager) {
+        this.playerShopManager = playerShopManager;
+    }
+
+    public boolean handleListShopsCommand(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("marketcraft.admin")) {
+            sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
+            return false;
+        }
+
+        // Default to page 1 if no page number is provided
+        int page = 1;
+        if (args.length > 1) {
+            try {
+                page = Integer.parseInt(args[1]);
+                if (page < 1) {
+                    sender.sendMessage(Component.text("Page number must be a positive integer.", NamedTextColor.RED));
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                sender.sendMessage(Component.text("Invalid page number.", NamedTextColor.RED));
+                return false;
+            }
+        }
+
+        File[] shopFiles = playerShopManager.listAllShops();
+        if (shopFiles == null || shopFiles.length == 0) {
+            sender.sendMessage(Component.text("No shops found.", NamedTextColor.RED));
+            return true;
+        }
+
+        int totalEntries = shopFiles.length;
+        int totalPages = (int) Math.ceil((double) totalEntries / ENTRIES_PER_PAGE);
+
+        if (page > totalPages) {
+            sender.sendMessage(Component.text("Page " + page + " does not exist.", NamedTextColor.RED));
+            return false;
+        }
+
+        int start = (page - 1) * ENTRIES_PER_PAGE;
+        int end = Math.min(start + ENTRIES_PER_PAGE, totalEntries);
+
+        sender.sendMessage(Component.text("Shops (Page " + page + " of " + totalPages + "):", NamedTextColor.YELLOW));
+        for (int i = start; i < end; i++) {
+            sender.sendMessage(Component.text(shopFiles[i].getName(), NamedTextColor.GREEN));
+        }
+
+        return true;
+    }
+}

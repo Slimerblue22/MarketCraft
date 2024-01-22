@@ -44,7 +44,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final ListVaultsCommand listVaultsCommand;
     private final CreateShopCommand createShopCommand;
     private final RemoveShopCommand removeShopCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop"};
+    private final ListShopsCommand listShopsCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
@@ -54,6 +55,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
         this.createShopCommand = new CreateShopCommand();
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
+        this.listShopsCommand = new ListShopsCommand(playerShopManager);
     }
 
     /**
@@ -90,6 +92,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs markcraft.admin
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs markcraft.admin
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs markcraft.admin
+            case "listshops" -> listShopsCommand.handleListShopsCommand(sender, args); // Needs markcraft.admin
             default -> {
                 handleUnknownCommand(sender);
                 yield false;
