@@ -89,10 +89,10 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "version" -> versionCommand.handleVersionCommand(sender);
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender);
-            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs markcraft.admin
-            case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs markcraft.admin
-            case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs markcraft.admin
-            case "listshops" -> listShopsCommand.handleListShopsCommand(sender, args); // Needs markcraft.admin
+            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin
+            case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs marketcraft.admin
+            case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
+            case "listshops" -> listShopsCommand.handleListShopsCommand(sender, args); // Needs marketcraft.admin
             default -> {
                 handleUnknownCommand(sender);
                 yield false;
