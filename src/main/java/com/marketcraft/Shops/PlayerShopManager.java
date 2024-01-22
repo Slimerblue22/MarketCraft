@@ -1,5 +1,6 @@
 package com.marketcraft.Shops;
 
+import com.marketcraft.Util.DebugManager;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -35,6 +36,29 @@ public class PlayerShopManager {
             config.save(playerShopFile);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private boolean doesPlayerShopExist(UUID playerUUID) {
+        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+        return playerShopFile.exists();
+    }
+
+    public boolean removePlayerShopFile(String uuidString) {
+        UUID playerUUID = UUID.fromString(uuidString);
+        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+
+        if (doesPlayerShopExist(playerUUID)) {
+            if (playerShopFile.delete()) {
+                DebugManager.log(DebugManager.Category.DEBUG, "Shop file successfully deleted for UUID: " + uuidString);
+                return true;
+            } else {
+                DebugManager.log(DebugManager.Category.DEBUG, "Failed to delete shop file for UUID: " + uuidString);
+                return false;
+            }
+        } else {
+            DebugManager.log(DebugManager.Category.DEBUG, "No shop file exists for UUID: " + uuidString + " to delete.");
+            return false;
         }
     }
 }

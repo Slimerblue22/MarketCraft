@@ -1,6 +1,7 @@
 package com.marketcraft;
 
 import com.marketcraft.Commands.*;
+import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -42,15 +43,17 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final RemoveVaultCommand removeVaultCommand;
     private final ListVaultsCommand listVaultsCommand;
     private final CreateShopCommand createShopCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop"};
+    private final RemoveShopCommand removeShopCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop"};
 
-    public CommandHandler(PlayerVaultManager playerVaultManager) {
+    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager);
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
         this.createShopCommand = new CreateShopCommand();
+        this.removeShopCommand = new RemoveShopCommand(playerShopManager);
     }
 
     /**
@@ -85,6 +88,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender);
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs markcraft.admin
+            case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs markcraft.admin
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs markcraft.admin
             default -> {
                 handleUnknownCommand(sender);
