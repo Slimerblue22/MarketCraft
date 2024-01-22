@@ -7,6 +7,13 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 
+/**
+ * Handles the 'listshops' subcommand of the /marketcraft command set.
+ * This class allows administrators with the appropriate permissions to list all player shops.
+ * It supports pagination to display the shops in a manageable format, showing a set number
+ * of entries per page. The command ensures that only authorized users can view the list of shops,
+ * and it provides functionality to navigate through the shops in a paginated manner.
+ */
 public class ListShopsCommand {
 
     private static final int ENTRIES_PER_PAGE = 10;
