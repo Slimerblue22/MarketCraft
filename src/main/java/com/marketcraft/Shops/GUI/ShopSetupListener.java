@@ -86,17 +86,8 @@ public class ShopSetupListener implements Listener {
         }
     }
 
-    // It would appear there is an issue with adding items that already exist within the GUI
-    // Since the listener is canceling clicks on these items, you can usually add them but can't remove them afterward
-    // TODO: Look into fix later (Maybe manually define the slots to cancel?)
     private void handleItemClick(InventoryClickEvent event, Player player) {
-        ItemStack clickedItem = event.getCurrentItem();
         int slot = event.getRawSlot();
-
-        if (isNonInteractiveItem(clickedItem)) {
-            event.setCancelled(true);
-            return;
-        }
 
         switch (slot) {
             case 13:
@@ -114,13 +105,6 @@ public class ShopSetupListener implements Listener {
                 event.setCancelled(true);
                 break;
         }
-    }
-
-    private boolean isNonInteractiveItem(ItemStack item) {
-        if (item == null) return false;
-        return item.getType() == Material.GREEN_STAINED_GLASS_PANE ||
-                item.getType() == Material.RED_STAINED_GLASS_PANE ||
-                item.getType() == Material.NAME_TAG;
     }
 
     private void handleRedWoolClick(Player player, InventoryClickEvent event) {
