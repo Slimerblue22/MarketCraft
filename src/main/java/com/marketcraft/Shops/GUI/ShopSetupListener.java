@@ -9,10 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ShopSetupListener implements Listener {
 
@@ -20,6 +25,43 @@ public class ShopSetupListener implements Listener {
 
     public ShopSetupListener(PlayerShopManager playerShopManager) {
         this.playerShopManager = playerShopManager;
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof Player player && event.getView().title().equals(Component.text("Shop Setup"))) {
+            Inventory shopSetupInventory = event.getInventory();
+
+            List<ItemStack> itemsToReturn = new ArrayList<>();
+            ItemStack item13 = shopSetupInventory.getItem(13);
+            ItemStack item40 = shopSetupInventory.getItem(40);
+
+            if (item13 != null && item13.getType() != Material.AIR) {
+                itemsToReturn.add(item13);
+            }
+            if (item40 != null && item40.getType() != Material.AIR) {
+                itemsToReturn.add(item40);
+            }
+
+            returnItemsToPlayer(player, itemsToReturn);
+        }
+    }
+
+    private void returnItemsToPlayer(Player player, List<ItemStack> items) {
+        boolean itemsDropped = false;
+        for (ItemStack item : items) {
+            Map<Integer, ItemStack> unaddedItems = player.getInventory().addItem(item);
+            if (!unaddedItems.isEmpty()) {
+                unaddedItems.values().forEach(it -> player.getWorld().dropItem(player.getLocation(), it));
+                itemsDropped = true;
+            }
+        }
+
+        // If boolean was changed to true, one or more items were dropped, notify the player
+        if (itemsDropped) {
+            player.sendMessage(Component.text("Your inventory is full. Items have been dropped at your location.", NamedTextColor.RED));
+        }
     }
 
     @EventHandler
@@ -81,9 +123,6 @@ public class ShopSetupListener implements Listener {
                 item.getType() == Material.NAME_TAG;
     }
 
-    // TODO: Items are lost when GUI is closed regardless of option picked
-    // Need to find a way to ensure they keep the item(s) they have put in the GUI once the process is done
-    // whether that be by canceling, confirming, or simply closing the inventory via the escape key
     private void handleRedWoolClick(Player player, InventoryClickEvent event) {
         player.sendMessage(Component.text("Shop creation canceled!", NamedTextColor.GREEN));
         event.setCancelled(true);
