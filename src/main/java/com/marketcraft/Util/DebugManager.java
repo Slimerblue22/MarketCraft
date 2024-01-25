@@ -5,8 +5,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -62,8 +60,8 @@ public class DebugManager {
 
     /**
      * Logs a debug message to the appropriate destinations based on the active settings.
-     * For players with the appropriate permission, the message is formatted with colors and sent in-game.
-     * For the console, a plain text version of the message is logged.
+     * For players with the appropriate permission, the message is sent in-game.
+     * For the console, the message is sent to the systems console.
      *
      * @param category The category of the debug message.
      * @param message  The actual debug message to be logged.
@@ -72,19 +70,13 @@ public class DebugManager {
         if (isCategoryEnabled(category)) {
             String version = MarketCraft.getPluginVersion();
 
-            // For console
-            String plainMessage = "{MarketCraft " + version + " DEBUG} [" + category.name() + "] " + message;
-
-            // For players
-            TextComponent formattedMessage = Component.text("{MarketCraft " + version + " DEBUG} [", NamedTextColor.GOLD)
-                    .append(Component.text(category.name(), NamedTextColor.YELLOW))
-                    .append(Component.text("] ", NamedTextColor.GOLD))
-                    .append(Component.text(message, NamedTextColor.GREEN));
+            // Plain text message for both console and players
+            String plainMessage = "[MarketCraft " + version + " DEBUG] [" + category.name() + "] " + message;
 
             if (globalDebugDestination == DebugDestination.BOTH || globalDebugDestination == DebugDestination.PLAYER) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     if (onlinePlayer.hasPermission("marketcraft.debug")) {
-                        onlinePlayer.sendMessage(formattedMessage);
+                        onlinePlayer.sendMessage(plainMessage);
                     }
                 }
             }
@@ -131,7 +123,7 @@ public class DebugManager {
         @Override
         public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
             if (!sender.hasPermission("marketcraft.debug")) {
-                sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
+                sender.sendMessage(Component.text("You don't have permission to run this command."));
                 return false;
             }
 
@@ -160,10 +152,10 @@ public class DebugManager {
          * @param player The player to whom the message should be displayed.
          */
         private void handleUnknownCommand(@NotNull CommandSender player) {
-            player.sendMessage(Component.text("Unknown subcommand. Use one of the following:", NamedTextColor.RED));
+            player.sendMessage(Component.text("Unknown subcommand. Use one of the following:"));
             String[] commands = {"category", "destination", "help", "status"};
             for (String cmd : commands) {
-                player.sendMessage(Component.text("/marketcraftdebug " + cmd, NamedTextColor.GRAY));
+                player.sendMessage(Component.text("/marketcraftdebug " + cmd));
             }
         }
 
@@ -216,7 +208,7 @@ public class DebugManager {
          */
         private boolean handleToggleCategoryCommand(@NotNull CommandSender player, String[] args) {
             if (args.length != 2) {
-                player.sendMessage(Component.text("Usage: /marketcraftdebug category [Category]", NamedTextColor.RED));
+                player.sendMessage(Component.text("Usage: /marketcraftdebug category [Category]"));
                 return false;
             }
 
@@ -227,15 +219,15 @@ public class DebugManager {
                 // Toggle the category state and send appropriate feedback
                 if (isCategoryEnabled(category)) {
                     disableCategory(category);
-                    player.sendMessage(Component.text(category.name() + " debug mode disabled", NamedTextColor.GREEN));
+                    player.sendMessage(Component.text(category.name() + " debug mode disabled"));
                 } else {
                     enableCategory(category);
-                    player.sendMessage(Component.text(category.name() + " debug mode enabled", NamedTextColor.GREEN));
+                    player.sendMessage(Component.text(category.name() + " debug mode enabled"));
                 }
             } catch (IllegalArgumentException e) {
                 // Handle invalid category names
-                player.sendMessage(Component.text("Invalid category name: " + categoryName, NamedTextColor.RED));
-                player.sendMessage(Component.text("Available categories: " + Arrays.toString(Category.values()), NamedTextColor.GRAY));
+                player.sendMessage(Component.text("Invalid category name: " + categoryName));
+                player.sendMessage(Component.text("Available categories: " + Arrays.toString(Category.values())));
                 return false;
             }
 
@@ -251,18 +243,18 @@ public class DebugManager {
          */
         private boolean handleSetDestinationCommand(@NotNull CommandSender player, String[] args) {
             if (args.length != 2) {
-                player.sendMessage(Component.text("Usage: /marketcraftdebug destination [Destination]", NamedTextColor.RED));
+                player.sendMessage(Component.text("Usage: /marketcraftdebug destination [Destination]"));
                 return false;
             }
 
             try {
                 DebugDestination destination = DebugDestination.valueOf(args[1].toUpperCase());
                 globalDebugDestination = destination;
-                player.sendMessage(Component.text("Debug message destination set to " + destination.name(), NamedTextColor.GREEN));
+                player.sendMessage(Component.text("Debug message destination set to " + destination.name()));
             } catch (IllegalArgumentException e) {
                 // Inform the player of the invalid input and provide valid options
-                player.sendMessage(Component.text("Invalid debug destination name.", NamedTextColor.RED));
-                player.sendMessage(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values()), NamedTextColor.GRAY));
+                player.sendMessage(Component.text("Invalid debug destination name."));
+                player.sendMessage(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values())));
                 return false;
             }
 
@@ -279,25 +271,24 @@ public class DebugManager {
             TextComponent.Builder messageBuilder = Component.text();
 
             // Constructing header section
-            messageBuilder.append(Component.text("Debug System Status", NamedTextColor.GOLD)
-                            .decoration(TextDecoration.BOLD, true))
-                    .append(Component.newline());
+            messageBuilder.append(Component.text("Debug System Status")
+                    .append(Component.newline()));
 
             // Listing enabled categories
-            messageBuilder.append(Component.text("Enabled Categories:", NamedTextColor.GOLD))
+            messageBuilder.append(Component.text("Enabled Categories:"))
                     .append(Component.newline());
             if (!activeCategories.isEmpty()) {
                 for (Category category : activeCategories) {
-                    messageBuilder.append(Component.text("- " + category.name(), NamedTextColor.GREEN))
+                    messageBuilder.append(Component.text("- " + category.name()))
                             .append(Component.newline());
                 }
             } else {
-                messageBuilder.append(Component.text("No categories currently enabled.", NamedTextColor.RED))
+                messageBuilder.append(Component.text("No categories currently enabled."))
                         .append(Component.newline());
             }
 
             // Displaying global debug message destination
-            messageBuilder.append(Component.text("Debug messages are being sent to: " + globalDebugDestination.name(), NamedTextColor.GOLD))
+            messageBuilder.append(Component.text("Debug messages are being sent to: " + globalDebugDestination.name()))
                     .append(Component.newline());
 
             // Sending the formatted status message to the player
@@ -315,47 +306,46 @@ public class DebugManager {
             TextComponent.Builder messageBuilder = Component.text();
 
             // Constructing the header
-            messageBuilder.append(Component.text("MarketCraft Debugging System", NamedTextColor.GOLD)
-                            .decoration(TextDecoration.BOLD, true))
-                    .append(Component.newline());
+            messageBuilder.append(Component.text("MarketCraft Debugging System")
+                    .append(Component.newline()));
 
             // Introduction section
-            messageBuilder.append(Component.text("The MarketCraft Debugging system provides insights into the internal operations of the MarketCraft plugin. Here's how to use it:", NamedTextColor.YELLOW))
+            messageBuilder.append(Component.text("The MarketCraft Debugging system provides insights into the internal operations of the MarketCraft plugin. Here's how to use it:"))
                     .append(Component.newline());
 
             // Adding the documentation link
-            TextComponent linkMessage = Component.text("For more details, click here to visit the debugging documentation.", NamedTextColor.AQUA)
+            TextComponent linkMessage = Component.text("For more details, click here to visit the debugging documentation.")
                     .clickEvent(ClickEvent.openUrl("http://www.example.com"))  // Replace with the actual documentation link
                     .hoverEvent(HoverEvent.showText(Component.text("Click to open the documentation website!")));
             messageBuilder.append(linkMessage).append(Component.newline());
 
             // Listing available debug commands
-            messageBuilder.append(Component.text("Available Debug Commands:", NamedTextColor.GOLD))
+            messageBuilder.append(Component.text("Available Debug Commands:"))
                     .append(Component.newline());
 
             // Detailing each command
             // Command: category
-            messageBuilder.append(Component.text("/marketcraftdebug category [Category]", NamedTextColor.YELLOW))
-                    .append(Component.text(" - Toggle the debug mode for a specific category.", NamedTextColor.GREEN))
+            messageBuilder.append(Component.text("/marketcraftdebug category [Category]"))
+                    .append(Component.text(" - Toggle the debug mode for a specific category."))
                     .append(Component.newline())
-                    .append(Component.text("Available categories: " + Arrays.toString(Category.values()), NamedTextColor.GRAY))
+                    .append(Component.text("Available categories: " + Arrays.toString(Category.values())))
                     .append(Component.newline());
 
             // Command: destination
-            messageBuilder.append(Component.text("/marketcraftdebug destination [Destination]", NamedTextColor.YELLOW))
-                    .append(Component.text(" - Set the global destination for debug messages.", NamedTextColor.GREEN))
+            messageBuilder.append(Component.text("/marketcraftdebug destination [Destination]"))
+                    .append(Component.text(" - Set the global destination for debug messages."))
                     .append(Component.newline())
-                    .append(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values()), NamedTextColor.GRAY))
+                    .append(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values())))
                     .append(Component.newline());
 
             // Command: status
-            messageBuilder.append(Component.text("/marketcraftdebug status", NamedTextColor.YELLOW))
-                    .append(Component.text(" - View the currently enabled debug categories and the global debug message destination.", NamedTextColor.GREEN))
+            messageBuilder.append(Component.text("/marketcraftdebug status"))
+                    .append(Component.text(" - View the currently enabled debug categories and the global debug message destination."))
                     .append(Component.newline());
 
             // Command: help
-            messageBuilder.append(Component.text("/marketcraftdebug help", NamedTextColor.YELLOW))
-                    .append(Component.text(" - Display this help message.", NamedTextColor.GREEN));
+            messageBuilder.append(Component.text("/marketcraftdebug help"))
+                    .append(Component.text(" - Display this help message."));
 
             // Sending the formatted help message to the player
             player.sendMessage(messageBuilder.build());

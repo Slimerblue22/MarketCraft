@@ -2,7 +2,6 @@ package com.marketcraft.Commands;
 
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -21,12 +20,12 @@ public class RemoveVaultCommand {
 
     public boolean handleRemoveVaultCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("marketcraft.admin")) {
-            sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
 
         if (args.length != 2) {
-            sender.sendMessage(Component.text("Usage: /marketcraft removevault <playerUUID>", NamedTextColor.RED));
+            sender.sendMessage(Component.text("Usage: /marketcraft removevault <playerUUID>"));
             return false;
         }
 
@@ -34,13 +33,13 @@ public class RemoveVaultCommand {
         try {
             boolean isRemoved = playerVaultManager.removePlayerVaultFile(uuidString);
             if (isRemoved) {
-                sender.sendMessage(Component.text("Removed vault for UUID: " + uuidString, NamedTextColor.GREEN));
+                sender.sendMessage(Component.text("Removed vault for UUID: " + uuidString));
             } else {
-                sender.sendMessage(Component.text("No vault found for UUID: " + uuidString, NamedTextColor.RED));
+                sender.sendMessage(Component.text("No vault found for UUID: " + uuidString));
             }
             return isRemoved;
         } catch (IllegalArgumentException e) {
-            sender.sendMessage(Component.text("Invalid UUID format: " + uuidString, NamedTextColor.RED));
+            sender.sendMessage(Component.text("Invalid UUID format: " + uuidString));
             return false;
         }
     }

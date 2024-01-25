@@ -3,7 +3,6 @@ package com.marketcraft.Commands;
 import com.marketcraft.Vaults.GUI.PlayerVaultGUI;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,15 +25,15 @@ public class OpenVaultCommand {
 
     public boolean handleOpenVaultCommand(CommandSender sender) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(Component.text("This command can only be used by players.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("This command can only be used by players."));
             return false;
         }
 
         if (playerVaultManager.doesPlayerVaultExist(player.getUniqueId())) {
-            sender.sendMessage(Component.text("Opening your existing vault...", NamedTextColor.GOLD));
+            sender.sendMessage(Component.text("Opening your existing vault..."));
             playerVaultGUI.openVault(player);
         } else {
-            sender.sendMessage(Component.text("Creating and opening a new vault...", NamedTextColor.GOLD));
+            sender.sendMessage(Component.text("Creating and opening a new vault..."));
             playerVaultManager.createPlayerVaultFile(player);
             playerVaultGUI.openVault(player);
         }

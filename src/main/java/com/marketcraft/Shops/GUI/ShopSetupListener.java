@@ -2,7 +2,6 @@ package com.marketcraft.Shops.GUI;
 
 import com.marketcraft.Shops.PlayerShopManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -60,7 +59,7 @@ public class ShopSetupListener implements Listener {
 
         // If boolean was changed to true, one or more items were dropped, notify the player
         if (itemsDropped) {
-            player.sendMessage(Component.text("Your inventory is full. Items have been dropped at your location.", NamedTextColor.RED));
+            player.sendMessage(Component.text("Your inventory is full. Items have been dropped at your location."));
         }
     }
 
@@ -108,7 +107,7 @@ public class ShopSetupListener implements Listener {
     }
 
     private void handleRedWoolClick(Player player, InventoryClickEvent event) {
-        player.sendMessage(Component.text("Shop creation canceled!", NamedTextColor.GREEN));
+        player.sendMessage(Component.text("Shop creation canceled!"));
         event.setCancelled(true);
         player.closeInventory();
     }
@@ -120,9 +119,9 @@ public class ShopSetupListener implements Listener {
 
         if (itemToSell != null && itemToCharge != null) {
             playerShopManager.savePlayerShop(player, itemToSell, itemToCharge);
-            player.sendMessage(Component.text("Shop setup confirmed!", NamedTextColor.GREEN));
+            player.sendMessage(Component.text("Shop setup confirmed!"));
         } else {
-            player.sendMessage(Component.text("Please place items in both the 'item to sell' and 'item to charge' slots.", NamedTextColor.RED));
+            player.sendMessage(Component.text("Please place items in both the 'item to sell' and 'item to charge' slots."));
         }
         player.closeInventory();
     }

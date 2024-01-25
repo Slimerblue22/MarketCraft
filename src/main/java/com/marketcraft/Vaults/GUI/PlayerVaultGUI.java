@@ -2,12 +2,11 @@ package com.marketcraft.Vaults.GUI;
 
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.Map;
@@ -27,7 +26,7 @@ public class PlayerVaultGUI {
         File playerVaultFile = playerVaultManager.getPlayerVaultFile(player.getUniqueId());
         if (playerVaultFile == null) {
             // The player should never be able to get to this point unless something goes wrong
-            player.sendMessage(Component.text("An unexpected error has occurred, please wait a moment then try again.", NamedTextColor.RED));
+            player.sendMessage(Component.text("An unexpected error has occurred, please wait a moment then try again."));
             return;
         }
 

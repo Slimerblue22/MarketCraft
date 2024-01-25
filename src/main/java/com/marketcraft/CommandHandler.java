@@ -4,7 +4,6 @@ import com.marketcraft.Commands.*;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -73,7 +72,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!sender.hasPermission("marketcraft.use")) {
-            sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
 
@@ -135,9 +134,9 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
      * @param sender The sender of the command.
      */
     private void handleUnknownCommand(CommandSender sender) {
-        sender.sendMessage(Component.text("Unknown command. Use one of the following:", NamedTextColor.RED));
+        sender.sendMessage(Component.text("Unknown command. Use one of the following:"));
         for (String cmd : COMMANDS) {
-            sender.sendMessage(Component.text("/marketcraft " + cmd, NamedTextColor.GRAY));
+            sender.sendMessage(Component.text("/marketcraft " + cmd));
         }
     }
 }

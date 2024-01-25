@@ -2,7 +2,6 @@ package com.marketcraft.Commands;
 
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 
 import java.io.File;
@@ -25,7 +24,7 @@ public class ListVaultsCommand {
 
     public boolean handleListVaultsCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("marketcraft.admin")) {
-            sender.sendMessage(Component.text("You don't have permission to run this command.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
 
@@ -35,18 +34,18 @@ public class ListVaultsCommand {
             try {
                 page = Integer.parseInt(args[1]);
                 if (page < 1) {
-                    sender.sendMessage(Component.text("Page number must be a positive integer.", NamedTextColor.RED));
+                    sender.sendMessage(Component.text("Page number must be a positive integer."));
                     return false;
                 }
             } catch (NumberFormatException e) {
-                sender.sendMessage(Component.text("Invalid page number.", NamedTextColor.RED));
+                sender.sendMessage(Component.text("Invalid page number."));
                 return false;
             }
         }
 
         File[] vaultFiles = playerVaultManager.listAllVaults();
         if (vaultFiles == null || vaultFiles.length == 0) {
-            sender.sendMessage(Component.text("No vaults found.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("No vaults found."));
             return true;
         }
 
@@ -54,16 +53,16 @@ public class ListVaultsCommand {
         int totalPages = (int) Math.ceil((double) totalEntries / ENTRIES_PER_PAGE);
 
         if (page > totalPages) {
-            sender.sendMessage(Component.text("Page " + page + " does not exist.", NamedTextColor.RED));
+            sender.sendMessage(Component.text("Page " + page + " does not exist."));
             return false;
         }
 
         int start = (page - 1) * ENTRIES_PER_PAGE;
         int end = Math.min(start + ENTRIES_PER_PAGE, totalEntries);
 
-        sender.sendMessage(Component.text("Vaults (Page " + page + " of " + totalPages + "):", NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("Vaults (Page " + page + " of " + totalPages + "):"));
         for (int i = start; i < end; i++) {
-            sender.sendMessage(Component.text(vaultFiles[i].getName(), NamedTextColor.GREEN));
+            sender.sendMessage(Component.text(vaultFiles[i].getName()));
         }
 
         return true;
