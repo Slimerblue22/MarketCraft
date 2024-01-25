@@ -20,12 +20,11 @@ public class PlayerOpenShopGUI {
         this.playerShopManager = playerShopManager;
     }
 
-    public void openPlayerShopGUI(Player player, String shopOwnerUUIDString) {
-        UUID shopOwnerUUID = UUID.fromString(shopOwnerUUIDString);
+    public void openPlayerShopGUI(Player player, UUID shopOwnerUUID) {
         ItemStack[] shopItems = playerShopManager.getPlayerShopItems(shopOwnerUUID);
 
         if (shopItems == null) {
-            player.sendMessage("Shop items could not be loaded.");
+            player.sendMessage("Shop does not exist or is invalid");
             return;
         }
 

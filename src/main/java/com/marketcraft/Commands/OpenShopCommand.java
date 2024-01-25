@@ -4,8 +4,12 @@ import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class OpenShopCommand {
     private final PlayerShopManager playerShopManager;
@@ -25,17 +29,15 @@ public class OpenShopCommand {
         }
 
         if (args.length != 2) {
-            sender.sendMessage(Component.text("Usage: /marketcraft openshop <playerUUID>"));
+            sender.sendMessage(Component.text("Usage: /marketcraft openshop <playerName>"));
             return false;
         }
 
-        String shopOwnerUUIDString = args[1];
-        try {
-            playerOpenShopGUI.openPlayerShopGUI(player, shopOwnerUUIDString);
-            return true;
-        } catch (IllegalArgumentException e) {
-            sender.sendMessage(Component.text("Invalid UUID format: " + shopOwnerUUIDString));
-            return false;
-        }
+        String playerName = args[1];
+        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
+        UUID shopOwnerUUID = offlinePlayer.getUniqueId();
+
+        playerOpenShopGUI.openPlayerShopGUI(player, shopOwnerUUID);
+        return true;
     }
 }
