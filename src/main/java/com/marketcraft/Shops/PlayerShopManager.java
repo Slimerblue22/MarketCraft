@@ -39,6 +39,26 @@ public class PlayerShopManager {
         }
     }
 
+    public ItemStack[] getPlayerShopItems(UUID playerUUID) {
+        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+        if (!playerShopFile.exists()) {
+            return null;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
+        ItemStack itemToSell = null;
+        ItemStack itemToCharge = null;
+
+        if (config.contains("shop.itemToSell")) {
+            itemToSell = ItemStack.deserialize(config.getConfigurationSection("shop.itemToSell").getValues(false));
+        }
+        if (config.contains("shop.itemToCharge")) {
+            itemToCharge = ItemStack.deserialize(config.getConfigurationSection("shop.itemToCharge").getValues(false));
+        }
+
+        return new ItemStack[] { itemToSell, itemToCharge };
+    }
+
     public File[] listAllShops() {
         return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
     }

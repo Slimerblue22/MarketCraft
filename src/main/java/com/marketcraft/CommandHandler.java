@@ -44,7 +44,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final CreateShopCommand createShopCommand;
     private final RemoveShopCommand removeShopCommand;
     private final ListShopsCommand listShopsCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops"};
+    private final OpenShopCommand openShopCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops", "openshop"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
@@ -55,6 +56,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.createShopCommand = new CreateShopCommand();
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
+        this.openShopCommand = new OpenShopCommand(playerShopManager, playerVaultManager);
     }
 
     /**
@@ -88,6 +90,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "version" -> versionCommand.handleVersionCommand(sender);
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender);
+            case "openshop" -> openShopCommand.handleOpenShopCommand(sender,args);
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs marketcraft.admin
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
