@@ -19,7 +19,7 @@ public class OpenShopCommand {
     public OpenShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;
-        this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager);
+        this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager);
     }
 
     public boolean handleOpenShopCommand(CommandSender sender, String[] args) {

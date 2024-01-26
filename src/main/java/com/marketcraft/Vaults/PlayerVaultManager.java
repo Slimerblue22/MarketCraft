@@ -56,6 +56,27 @@ public class PlayerVaultManager {
         }
     }
 
+    public int getItemCountInPlayerVault(UUID playerUUID, ItemStack itemToCheck) {
+        File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
+        if (!playerVaultFile.exists()) {
+            return 0;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+        int itemCount = 0;
+
+        for (String key : config.getConfigurationSection("vault").getKeys(false)) {
+            ItemStack item = ItemStack.deserialize(config.getConfigurationSection("vault." + key).getValues(false));
+
+            // Check if the item is similar to the one we are looking for
+            if (item.isSimilar(itemToCheck)) {
+                itemCount += item.getAmount();
+            }
+        }
+
+        return itemCount;
+    }
+
     public File getPlayerVaultFile(UUID playerUUID) {
         if (doesPlayerVaultExist(playerUUID)) {
             return new File(vaultsFolder, playerUUID + ".yml");

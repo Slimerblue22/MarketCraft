@@ -1,6 +1,7 @@
 package com.marketcraft.Shops.GUI;
 
 import com.marketcraft.Shops.PlayerShopManager;
+import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -15,9 +16,11 @@ public class PlayerOpenShopGUI {
 
     private static final int INVENTORY_SIZE = 54; // 6 rows x 9 columns for a double chest
     private final PlayerShopManager playerShopManager;
+    private final PlayerVaultManager playerVaultManager;
 
-    public PlayerOpenShopGUI(PlayerShopManager playerShopManager) {
+    public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager) {
         this.playerShopManager = playerShopManager;
+        this.playerVaultManager = playerVaultManager;
     }
 
     public void openPlayerShopGUI(Player player, UUID shopOwnerUUID) {
@@ -49,6 +52,13 @@ public class PlayerOpenShopGUI {
         itemCostTagMeta.displayName(Component.text("Cost"));
         itemCostTag.setItemMeta(itemCostTagMeta);
 
+        // Add stock indicator item
+        ItemStack stockIndicator = new ItemStack(Material.NAME_TAG);
+        ItemMeta stockIndicatorMeta = stockIndicator.getItemMeta();
+        int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
+        stockIndicatorMeta.displayName(Component.text("Shop has " + stockCount + " in stock"));
+        stockIndicator.setItemMeta(stockIndicatorMeta);
+
         // Set names for action items
         ItemMeta closeShopMeta = cancelSelection.getItemMeta();
         closeShopMeta.displayName(Component.text("Close shop"));
@@ -73,6 +83,7 @@ public class PlayerOpenShopGUI {
         shopInventory.setItem(31, itemCostTag);
         shopInventory.setItem(45, cancelSelection);
         shopInventory.setItem(53, confirmSelection);
+        shopInventory.setItem(14, stockIndicator);
 
         // Items being sold and bought
         shopInventory.setItem(13, itemBeingSold);
