@@ -1,11 +1,14 @@
 package com.marketcraft.Shops;
 
 import com.marketcraft.Vaults.PlayerVaultManager;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.UUID;
+
+import static com.marketcraft.Util.GUIUtils.createNamedItem;
 
 public class ShopTransaction {
     private final PlayerVaultManager playerVaultManager;
@@ -24,8 +27,15 @@ public class ShopTransaction {
                 giveItemsToBuyer(player, itemBeingSold);
                 playerVaultManager.removeItemsFromPlayerVault(shopOwnerUUID, itemBeingSold, itemBeingSold.getAmount());
                 playerVaultManager.addItemsToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount());
+                updateStockIndicator(shopInventory, shopOwnerUUID, itemBeingSold);
             }
         }
+    }
+
+    private void updateStockIndicator(Inventory shopInventory, UUID shopOwnerUUID, ItemStack itemBeingSold) {
+        int newStockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
+        ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + newStockCount + " in stock");
+        shopInventory.setItem(14, stockIndicator);
     }
 
     private boolean shopHasSufficientSpace(Player player, UUID shopOwnerUUID, ItemStack itemCost) {
