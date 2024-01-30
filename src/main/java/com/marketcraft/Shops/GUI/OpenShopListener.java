@@ -1,46 +1,53 @@
 package com.marketcraft.Shops.GUI;
 
+import com.marketcraft.MarketCraft;
+import com.marketcraft.Shops.ShopTransaction;
+import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.Objects;
+import java.util.UUID;
 
 public class OpenShopListener implements Listener {
+    private final ShopTransaction shopTransaction;
+    private final MarketCraft marketCraft;
 
-    public OpenShopListener() {
+    public OpenShopListener(PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
+        this.shopTransaction = new ShopTransaction(playerVaultManager);
+        this.marketCraft = marketCraft;
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().title().equals(Component.text("Shop"))) {
-            event.setCancelled(true); // Cancel all interactions by default
+            event.setCancelled(true);
 
             Player player = (Player) event.getWhoClicked();
             int clickedSlot = event.getRawSlot();
 
-            processShopInteraction(player, clickedSlot);
+            if (clickedSlot == 53) { // Buy button slot
+                // Retrieve the shop owner's UUID from the inventory
+                // This is used within the shop transaction logic to add and remove items from the shop owner's vault
+                ItemStack ownerIdentifier = event.getInventory().getItem(0);
+                ItemMeta meta = Objects.requireNonNull(ownerIdentifier).getItemMeta();
+                PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+                NamespacedKey key = new NamespacedKey(marketCraft, "shopOwnerUUID");
+                String uuidString = dataContainer.get(key, PersistentDataType.STRING);
+                UUID shopOwnerUUID = UUID.fromString(Objects.requireNonNull(uuidString));
+                // Sending the necessary information to the transaction handler
+                shopTransaction.processTransaction(player, event.getInventory(), shopOwnerUUID);
+            } else if (clickedSlot == 45) { // Close button slot
+                player.closeInventory();
+            }
         }
-    }
-
-    private void processShopInteraction(Player player, int slot) {
-        switch (slot) {
-            case 45: // Close Shop Button
-                handleCloseShop(player);
-                break;
-            case 53: // Buy Button
-                handleBuy(player);
-                break;
-        }
-    }
-
-    private void handleCloseShop(Player player) {
-        player.sendMessage("You clicked the Close Shop button!");
-        player.closeInventory();
-    }
-
-    private void handleBuy(Player player) {
-        player.sendMessage("You clicked the Buy button!");
-        // Add logic for handling purchase
     }
 }

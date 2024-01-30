@@ -1,6 +1,7 @@
 package com.marketcraft.Vaults;
 
 import com.marketcraft.Util.DebugManager;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -75,6 +76,115 @@ public class PlayerVaultManager {
         }
 
         return itemCount;
+    }
+
+    public void addItemsToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount) {
+        File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
+        if (!playerVaultFile.exists()) {
+            return;
+        }
+
+        try {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+            boolean itemAdded = false;
+
+            // Check existing slots for a match or an empty slot
+            for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
+                String slotKey = "vault.slot_" + i;
+                if (config.contains(slotKey)) {
+                    ItemStack existingItem = ItemStack.deserialize(config.getConfigurationSection(slotKey).getValues(false));
+                    if (existingItem.isSimilar(itemToAdd)) {
+                        // Increase amount if similar item found
+                        int newAmount = existingItem.getAmount() + amount;
+                        existingItem.setAmount(newAmount);
+                        config.set(slotKey, existingItem.serialize());
+                        itemAdded = true;
+                        break;
+                    }
+                } else {
+                    // Add item to a new empty slot
+                    itemToAdd.setAmount(amount);
+                    config.set(slotKey, itemToAdd.serialize());
+                    itemAdded = true;
+                    break;
+                }
+            }
+
+            // Save changes if an item was added
+            if (itemAdded) {
+                config.save(playerVaultFile);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void removeItemsFromPlayerVault(UUID playerUUID, ItemStack itemToRemove, int amount) {
+        File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
+        if (!playerVaultFile.exists()) {
+            return;
+        }
+
+        try {
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+            boolean itemRemoved = false;
+
+            for (String key : config.getConfigurationSection("vault").getKeys(false)) {
+                ItemStack item = ItemStack.deserialize(config.getConfigurationSection("vault." + key).getValues(false));
+
+                if (item.isSimilar(itemToRemove)) {
+                    int currentAmount = item.getAmount();
+                    if (currentAmount > amount) {
+                        item.setAmount(currentAmount - amount);
+                        config.set("vault." + key, item.serialize());
+                        itemRemoved = true;
+                        break;
+                    } else if (currentAmount == amount) {
+                        config.set("vault." + key, null);
+                        itemRemoved = true;
+                        break;
+                    }
+                }
+            }
+
+            if (itemRemoved) {
+                config.save(playerVaultFile);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean canAddItemToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount) {
+        File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
+        if (!playerVaultFile.exists()) {
+            return false;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+
+        // Check existing slots for a match or an empty slot
+        for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
+            String slotKey = "vault.slot_" + i;
+            if (config.contains(slotKey)) {
+                ItemStack existingItem = ItemStack.deserialize(config.getConfigurationSection(slotKey).getValues(false));
+                if (existingItem.isSimilar(itemToAdd)) {
+                    // Check if the existing similar item can hold more
+                    int totalAmount = existingItem.getAmount() + amount;
+                    if (totalAmount <= existingItem.getMaxStackSize()) {
+                        return true;
+                    }
+                }
+            } else {
+                // Found an empty slot
+                return true;
+            }
+        }
+
+        // No available slot found
+        return false;
     }
 
     public File getPlayerVaultFile(UUID playerUUID) {

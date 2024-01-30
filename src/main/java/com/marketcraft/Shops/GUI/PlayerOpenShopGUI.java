@@ -1,13 +1,17 @@
 package com.marketcraft.Shops.GUI;
 
+import com.marketcraft.MarketCraft;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.UUID;
 
@@ -23,16 +27,19 @@ public class PlayerOpenShopGUI {
     private static final int INVENTORY_SIZE = 54; // 6 rows x 9 columns for a double chest
     private final PlayerShopManager playerShopManager;
     private final PlayerVaultManager playerVaultManager;
+    private final MarketCraft marketCraft;
 
     /**
      * Constructs an instance of PlayerOpenShopGUI with the given shop and vault managers.
      *
      * @param playerShopManager The manager responsible for handling player shop data.
      * @param playerVaultManager The manager responsible for handling player vault data.
+     * @param marketCraft The main plugin class.
      */
-    public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager) {
+    public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;
+        this.marketCraft = marketCraft;
     }
 
     /**
@@ -62,6 +69,12 @@ public class PlayerOpenShopGUI {
         ItemStack itemCost = shopItems[1] != null ? shopItems[1] : new ItemStack(Material.AIR);
         int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + stockCount + " in stock");
+        // This is a special item that allows the shop owner UUID to be shared within the GUI
+        // It's a bit strange, but it's the best I've got right now
+        ItemStack ownerIdentifier = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemMeta meta = ownerIdentifier.getItemMeta();
+        meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopOwnerUUID"), PersistentDataType.STRING, shopOwnerUUID.toString());
+        ownerIdentifier.setItemMeta(meta);
 
         // Fill the entire inventory with the background
         for (int i = 0; i < INVENTORY_SIZE; i++) {
@@ -76,6 +89,7 @@ public class PlayerOpenShopGUI {
         shopInventory.setItem(14, stockIndicator);
         shopInventory.setItem(13, itemBeingSold);
         shopInventory.setItem(40, itemCost);
+        shopInventory.setItem(0, ownerIdentifier);
 
         // Setup is done, create the inventory
         player.openInventory(shopInventory);

@@ -1,5 +1,6 @@
 package com.marketcraft.Commands;
 
+import com.marketcraft.MarketCraft;
 import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
@@ -14,12 +15,14 @@ import java.util.UUID;
 public class OpenShopCommand {
     private final PlayerShopManager playerShopManager;
     private final PlayerVaultManager playerVaultManager;
+    private final MarketCraft marketCraft;
     private final PlayerOpenShopGUI playerOpenShopGUI;
 
-    public OpenShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager) {
+    public OpenShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;
-        this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager);
+        this.marketCraft = marketCraft;
+        this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, marketCraft);
     }
 
     public boolean handleOpenShopCommand(CommandSender sender, String[] args) {
