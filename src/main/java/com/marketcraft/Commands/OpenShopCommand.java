@@ -13,15 +13,9 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 public class OpenShopCommand {
-    private final PlayerShopManager playerShopManager;
-    private final PlayerVaultManager playerVaultManager;
-    private final MarketCraft marketCraft;
     private final PlayerOpenShopGUI playerOpenShopGUI;
 
     public OpenShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
-        this.playerShopManager = playerShopManager;
-        this.playerVaultManager = playerVaultManager;
-        this.marketCraft = marketCraft;
         this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, marketCraft);
     }
 
@@ -31,8 +25,8 @@ public class OpenShopCommand {
             return false;
         }
 
-        if (args.length != 2) {
-            sender.sendMessage(Component.text("Usage: /marketcraft openshop <playerName>"));
+        if (args.length != 3) {
+            sender.sendMessage(Component.text("Usage: /marketcraft openshop <playerName> <shopName>"));
             return false;
         }
 
@@ -40,7 +34,9 @@ public class OpenShopCommand {
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
         UUID shopOwnerUUID = offlinePlayer.getUniqueId();
 
-        playerOpenShopGUI.openPlayerShopGUI(player, shopOwnerUUID);
+        String shopName = args[2];
+
+        playerOpenShopGUI.openPlayerShopGUI(player, shopOwnerUUID, shopName);
         return true;
     }
 }

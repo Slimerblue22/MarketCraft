@@ -48,10 +48,11 @@ public class PlayerOpenShopGUI {
      *
      * @param player        The player for whom the shop GUI is to be opened.
      * @param shopOwnerUUID The UUID of the shop owner whose items are being displayed in the shop.
+     * @param shopName The name of the shop that the player is accessing.
      */
-    public void openPlayerShopGUI(Player player, UUID shopOwnerUUID) {
+    public void openPlayerShopGUI(Player player, UUID shopOwnerUUID, String shopName) {
         // If the method returns null, we can assume the shop does not exist or is invalid
-        ItemStack[] shopItems = playerShopManager.getPlayerShopItems(shopOwnerUUID);
+        ItemStack[] shopItems = playerShopManager.getPlayerShopItems(shopOwnerUUID, shopName);
         if (shopItems == null) {
             player.sendMessage("Shop does not exist or is invalid");
             return;

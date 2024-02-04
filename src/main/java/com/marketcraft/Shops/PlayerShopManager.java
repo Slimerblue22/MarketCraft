@@ -1,6 +1,7 @@
 package com.marketcraft.Shops;
 
 import com.marketcraft.Util.DebugManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,41 +20,48 @@ public class PlayerShopManager {
         }
     }
 
-    // NOTICE: This overwrites anything that previously existed in the file if one already exists
-    // If a file does not yet exist, it simply creates one
-    public void savePlayerShop(Player player, ItemStack itemToSell, ItemStack itemToCharge) {
+    public void savePlayerShop(Player player, String shopName, ItemStack itemToSell, ItemStack itemToCharge) {
         UUID playerUUID = player.getUniqueId();
+        String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
 
-        // Serialize the ItemStacks (Allows storing on NBT data)
-        config.set("shop.itemToSell", itemToSell.serialize());
-        config.set("shop.itemToCharge", itemToCharge.serialize());
+        // Serialize the ItemStacks (Allows storing of NBT data)
+        config.set(basePath + ".itemToSell", itemToSell.serialize());
+        config.set(basePath + ".itemToCharge", itemToCharge.serialize());
 
-        // I don't have a backup plan when it fails aside from printing the stack trace, need to figure something out
         try {
             config.save(playerShopFile);
         } catch (IOException e) {
             e.printStackTrace();
+            player.sendMessage(Component.text("An error occurred while saving your shop. Please try again later."));
         }
     }
 
-    public ItemStack[] getPlayerShopItems(UUID playerUUID) {
+    public ItemStack[] getPlayerShopItems(UUID playerUUID, String shopName) {
+        String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+        // This only checks if the file exists or not
         if (!playerShopFile.exists()) {
             return null;
         }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
+
+        // This then checks if the specific shop exists within the file
+        if (!config.contains(basePath)) {
+            return null;
+        }
+
         ItemStack itemToSell = null;
         ItemStack itemToCharge = null;
 
-        if (config.contains("shop.itemToSell")) {
-            itemToSell = ItemStack.deserialize(config.getConfigurationSection("shop.itemToSell").getValues(false));
+        if (config.contains(basePath + ".itemToSell")) {
+            itemToSell = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToSell").getValues(false));
         }
-        if (config.contains("shop.itemToCharge")) {
-            itemToCharge = ItemStack.deserialize(config.getConfigurationSection("shop.itemToCharge").getValues(false));
+        if (config.contains(basePath + ".itemToCharge")) {
+            itemToCharge = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToCharge").getValues(false));
         }
 
         return new ItemStack[] { itemToSell, itemToCharge };
@@ -63,16 +71,11 @@ public class PlayerShopManager {
         return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
     }
 
-    private boolean doesPlayerShopExist(UUID playerUUID) {
-        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
-        return playerShopFile.exists();
-    }
-
     public boolean removePlayerShopFile(String uuidString) {
         UUID playerUUID = UUID.fromString(uuidString);
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
 
-        if (doesPlayerShopExist(playerUUID)) {
+        if (playerShopFile.exists()) {
             if (playerShopFile.delete()) {
                 DebugManager.log(DebugManager.Category.DEBUG, "Shop file successfully deleted for UUID: " + uuidString);
                 return true;

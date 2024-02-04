@@ -2,6 +2,7 @@ package com.marketcraft.Shops.GUI;
 
 import com.marketcraft.Shops.PlayerShopManager;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,10 +14,12 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ShopSetupListener implements Listener {
     private final PlayerShopManager playerShopManager;
@@ -24,6 +27,7 @@ public class ShopSetupListener implements Listener {
     private static final int CHARGE_SLOT = 16;
     private static final int CANCEL_SLOT = 21;
     private static final int CONFIRM_SLOT = 23;
+    private static final int SHOP_NAME_TAG_SLOT = 4;
 
     public ShopSetupListener(PlayerShopManager playerShopManager) {
         this.playerShopManager = playerShopManager;
@@ -119,10 +123,14 @@ public class ShopSetupListener implements Listener {
         Inventory shopSetupInventory = event.getInventory();
         ItemStack itemToSell = shopSetupInventory.getItem(SELL_SLOT);
         ItemStack itemToCharge = shopSetupInventory.getItem(CHARGE_SLOT);
+        ItemStack shopNameItem = shopSetupInventory.getItem(SHOP_NAME_TAG_SLOT);
+        ItemMeta shopNameMeta = Objects.requireNonNull(shopNameItem).getItemMeta();
+        Component displayNameComponent = Objects.requireNonNull(shopNameMeta.displayName());
+        String shopName = PlainTextComponentSerializer.plainText().serialize(displayNameComponent);
 
         if (itemToSell != null && itemToCharge != null) {
-            playerShopManager.savePlayerShop(player, itemToSell, itemToCharge);
-            player.sendMessage(Component.text("Shop setup confirmed!"));
+            playerShopManager.savePlayerShop(player, shopName, itemToSell, itemToCharge);
+            player.sendMessage(Component.text("Shop '" + shopName + "' setup confirmed!"));
         } else {
             player.sendMessage(Component.text("Please place items in both the 'item to sell' and 'item to charge' slots."));
         }
