@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ShopSetupListener implements Listener {
-
     private final PlayerShopManager playerShopManager;
+    private static final int SELL_SLOT = 11;
+    private static final int CHARGE_SLOT = 16;
+    private static final int CANCEL_SLOT = 21;
+    private static final int CONFIRM_SLOT = 23;
 
     public ShopSetupListener(PlayerShopManager playerShopManager) {
         this.playerShopManager = playerShopManager;
@@ -33,14 +36,14 @@ public class ShopSetupListener implements Listener {
             Inventory shopSetupInventory = event.getInventory();
 
             List<ItemStack> itemsToReturn = new ArrayList<>();
-            ItemStack item13 = shopSetupInventory.getItem(13);
-            ItemStack item40 = shopSetupInventory.getItem(40);
+            ItemStack itemToSell = shopSetupInventory.getItem(SELL_SLOT);
+            ItemStack itemToCharge = shopSetupInventory.getItem(CHARGE_SLOT);
 
-            if (item13 != null && item13.getType() != Material.AIR) {
-                itemsToReturn.add(item13);
+            if (itemToSell != null && itemToSell.getType() != Material.AIR) {
+                itemsToReturn.add(itemToSell);
             }
-            if (item40 != null && item40.getType() != Material.AIR) {
-                itemsToReturn.add(item40);
+            if (itemToCharge != null && itemToCharge.getType() != Material.AIR) {
+                itemsToReturn.add(itemToCharge);
             }
 
             returnItemsToPlayer(player, itemsToReturn);
@@ -89,15 +92,15 @@ public class ShopSetupListener implements Listener {
         int slot = event.getRawSlot();
 
         switch (slot) {
-            case 13:
-            case 40:
-                // Allow interactions with slots 13 and 40
+            case SELL_SLOT:
+            case CHARGE_SLOT:
+                // Allow interactions with these slots
                 return;
-            case 45:
-                handleRedWoolClick(player, event);
+            case CANCEL_SLOT:
+                handleCancelSelectionClick(player, event);
                 break;
-            case 53:
-                handleGreenWoolClick(player, event);
+            case CONFIRM_SLOT:
+                handleConfirmSelectionClick(player, event);
                 break;
             default:
                 // Cancel all other interactions within the top inventory
@@ -106,16 +109,16 @@ public class ShopSetupListener implements Listener {
         }
     }
 
-    private void handleRedWoolClick(Player player, InventoryClickEvent event) {
+    private void handleCancelSelectionClick(Player player, InventoryClickEvent event) {
         player.sendMessage(Component.text("Shop creation canceled!"));
         event.setCancelled(true);
         player.closeInventory();
     }
 
-    private void handleGreenWoolClick(Player player, InventoryClickEvent event) {
+    private void handleConfirmSelectionClick(Player player, InventoryClickEvent event) {
         Inventory shopSetupInventory = event.getInventory();
-        ItemStack itemToSell = shopSetupInventory.getItem(13);
-        ItemStack itemToCharge = shopSetupInventory.getItem(40);
+        ItemStack itemToSell = shopSetupInventory.getItem(SELL_SLOT);
+        ItemStack itemToCharge = shopSetupInventory.getItem(CHARGE_SLOT);
 
         if (itemToSell != null && itemToCharge != null) {
             playerShopManager.savePlayerShop(player, itemToSell, itemToCharge);

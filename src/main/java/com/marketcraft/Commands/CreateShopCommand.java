@@ -20,14 +20,19 @@ public class CreateShopCommand {
         this.playerShopSetupGUI = new PlayerShopSetupGUI();
     }
 
-    public boolean handleCreateShopCommand(CommandSender sender) {
+    public boolean handleCreateShopCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));
             return false;
         }
 
-        sender.sendMessage(Component.text("Opening shop config."));
-        playerShopSetupGUI.openShopSetupGUI(player);
+        if (args.length != 2) {
+            sender.sendMessage(Component.text("Usage: /marketcraft createshop <name>"));
+            return false;
+        }
+
+        sender.sendMessage(Component.text("Creating shop."));
+        playerShopSetupGUI.openShopSetupGUI(player, args[1]);
         return true;
     }
 }

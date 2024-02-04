@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Arrays;
+
 import static com.marketcraft.Util.GUIUtils.createNamedItem;
 
 /**
@@ -16,7 +18,14 @@ import static com.marketcraft.Util.GUIUtils.createNamedItem;
  * @see com.marketcraft.Util.GUIUtils
  */
 public class PlayerShopSetupGUI {
-    private static final int INVENTORY_SIZE = 54; // 6 rows x 9 columns for a double chest
+    private static final int INVENTORY_SIZE = 27;
+    private static final int SELL_TAG_SLOT = 10;
+    private static final int CHARGE_TAG_SLOT = 15;
+    private static final int CANCEL_SLOT = 21;
+    private static final int CONFIRM_SLOT = 23;
+    private static final int SELL_SLOT = 11;
+    private static final int CHARGE_SLOT = 16;
+    private static final int SHOP_NAME_TAG_SLOT = 4;
 
     /**
      * Opens the shop setup GUI for the specified player.
@@ -25,30 +34,33 @@ public class PlayerShopSetupGUI {
      * to confirm or cancel the shop setup.
      *
      * @param player The player for whom the shop setup GUI is to be opened.
+     * @param shopName The name of the shop being created.
      */
-    public void openShopSetupGUI(Player player) {
+    public void openShopSetupGUI(Player player, String shopName) {
         Inventory shopSetupInventory = Bukkit.createInventory(player, INVENTORY_SIZE, Component.text("Shop Setup"));
 
         // Create the generic items for the inventory
-        ItemStack itemToSellTag = createNamedItem(Material.NAME_TAG, "Place item to sell here");
-        ItemStack itemToChargeTag = createNamedItem(Material.NAME_TAG, "Place item to charge here");
-        ItemStack cancelSelection = createNamedItem(Material.RED_WOOL, "Click to cancel selection");
-        ItemStack confirmSelection = createNamedItem(Material.GREEN_WOOL, "Click to confirm selection");
+        ItemStack shopNameTag = createNamedItem(Material.NAME_TAG, shopName);
+        ItemStack itemToSellTag = createNamedItem(Material.NAME_TAG, "Place item to sell to the right");
+        ItemStack itemToChargeTag = createNamedItem(Material.NAME_TAG, "Place item to charge to the right");
+        ItemStack cancelSelection = createNamedItem(Material.RED_STAINED_GLASS_PANE, "Click to cancel selection");
+        ItemStack confirmSelection = createNamedItem(Material.LIME_STAINED_GLASS_PANE, "Click to confirm selection");
 
         // Fill the entire inventory with the background
         for (int i = 0; i < INVENTORY_SIZE; i++) {
-            shopSetupInventory.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+            shopSetupInventory.setItem(i, createNamedItem(Material.GRAY_STAINED_GLASS_PANE, "")); // Empty name
         }
 
         // Replacing certain slots with the menu items
-        shopSetupInventory.setItem(4, itemToSellTag);
-        shopSetupInventory.setItem(31, itemToChargeTag);
-        shopSetupInventory.setItem(45, cancelSelection);
-        shopSetupInventory.setItem(53, confirmSelection);
+        shopSetupInventory.setItem(SHOP_NAME_TAG_SLOT, shopNameTag);
+        shopSetupInventory.setItem(SELL_TAG_SLOT, itemToSellTag);
+        shopSetupInventory.setItem(CHARGE_TAG_SLOT, itemToChargeTag);
+        shopSetupInventory.setItem(CANCEL_SLOT, cancelSelection);
+        shopSetupInventory.setItem(CONFIRM_SLOT, confirmSelection);
 
         // Clearing these slots to accept buy and sell items
-        shopSetupInventory.clear(13);
-        shopSetupInventory.clear(40);
+        shopSetupInventory.clear(SELL_SLOT);
+        shopSetupInventory.clear(CHARGE_SLOT);
 
         // Setup is done, create the inventory
         player.openInventory(shopSetupInventory);
