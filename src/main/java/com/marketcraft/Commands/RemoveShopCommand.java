@@ -24,18 +24,20 @@ public class RemoveShopCommand {
             return false;
         }
 
-        if (args.length != 2) {
-            sender.sendMessage(Component.text("Usage: /marketcraft removeshop <playerUUID>"));
+        if (args.length != 3) {
+            sender.sendMessage(Component.text("Usage: /marketcraft removeshop <playerUUID> <shopName>"));
             return false;
         }
 
         String uuidString = args[1];
+        String shopName = args[2];
+
         try {
-            boolean isRemoved = playerShopManager.removePlayerShopFile(uuidString);
+            boolean isRemoved = playerShopManager.deletePlayerShop(uuidString, shopName);
             if (isRemoved) {
-                sender.sendMessage(Component.text("Removed shop for UUID: " + uuidString));
+                sender.sendMessage(Component.text("Removed shop '" + shopName + "' for UUID: " + uuidString));
             } else {
-                sender.sendMessage(Component.text("No shop found for UUID: " + uuidString));
+                sender.sendMessage(Component.text("No shop '" + shopName + "' found for UUID: " + uuidString));
             }
             return isRemoved;
         } catch (IllegalArgumentException e) {

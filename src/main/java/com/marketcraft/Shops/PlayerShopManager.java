@@ -71,20 +71,30 @@ public class PlayerShopManager {
         return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
     }
 
-    public boolean removePlayerShopFile(String uuidString) {
+    public boolean deletePlayerShop(String uuidString, String shopName) {
+        String basePath = "shops." + shopName;
         UUID playerUUID = UUID.fromString(uuidString);
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
 
-        if (playerShopFile.exists()) {
-            if (playerShopFile.delete()) {
-                DebugManager.log(DebugManager.Category.DEBUG, "Shop file successfully deleted for UUID: " + uuidString);
-                return true;
-            } else {
-                DebugManager.log(DebugManager.Category.DEBUG, "Failed to delete shop file for UUID: " + uuidString);
-                return false;
-            }
-        } else {
-            DebugManager.log(DebugManager.Category.DEBUG, "No shop file exists for UUID: " + uuidString + " to delete.");
+        // This only checks if the file exists or not
+        if (!playerShopFile.exists()) {
+            return false;
+        }
+
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
+
+        // This then checks if the specific shop exists within the file
+        if (!config.contains(basePath)) {
+            return false;
+        }
+
+        config.set(basePath, null);
+
+        try {
+            config.save(playerShopFile);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
