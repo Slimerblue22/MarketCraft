@@ -29,7 +29,6 @@ public class PlayerVaultManager {
 
     public void createPlayerVaultFile(Player player) {
         UUID playerUUID = player.getUniqueId();
-        String playerName = player.getName();
 
         if (!doesPlayerVaultExist(playerUUID)) {
             try {
@@ -37,7 +36,6 @@ public class PlayerVaultManager {
                 boolean isNewFileCreated = playerVaultFile.createNewFile();
 
                 if (isNewFileCreated) {
-                    DebugManager.log(DebugManager.Category.DEBUG, "Creating new vault file for player: " + playerName);
                     YamlConfiguration config = new YamlConfiguration();
 
                     // Initialize with a basic structure otherwise we get NPE errors when trying to open it
@@ -45,15 +43,11 @@ public class PlayerVaultManager {
 
                     // Save the file with the initial structure
                     config.save(playerVaultFile);
-                    DebugManager.log(DebugManager.Category.DEBUG, "Vault file successfully created for player: " + playerName);
                 }
 
             } catch (IOException e) {
-                DebugManager.log(DebugManager.Category.DEBUG, "Failed to create vault file for player: " + playerName + " due to IOException.");
                 e.printStackTrace();
             }
-        } else {
-            DebugManager.log(DebugManager.Category.DEBUG, "Player: " + playerName + " already has a vault file.");
         }
     }
 
@@ -199,12 +193,9 @@ public class PlayerVaultManager {
     }
 
     public void savePlayerVault(Player player, Inventory vaultInventory) {
-        String playerName = player.getName();
-
         File playerVaultFile = getPlayerVaultFile(player.getUniqueId());
         if (playerVaultFile == null) return;
 
-        DebugManager.log(DebugManager.Category.DEBUG, "Saving vault for player: " + playerName);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
 
         for (int i = 0; i < vaultInventory.getSize(); i++) {
@@ -220,7 +211,6 @@ public class PlayerVaultManager {
         try {
             config.save(playerVaultFile);
         } catch (IOException e) {
-            DebugManager.log(DebugManager.Category.DEBUG, "Failed to save vault for player: " + playerName + " A stacktrace has been printed to console.");
             e.printStackTrace();
         }
     }
@@ -230,15 +220,8 @@ public class PlayerVaultManager {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
 
         if (doesPlayerVaultExist(playerUUID)) {
-            if (playerVaultFile.delete()) {
-                DebugManager.log(DebugManager.Category.DEBUG, "Vault file successfully deleted for UUID: " + uuidString);
-                return true;
-            } else {
-                DebugManager.log(DebugManager.Category.DEBUG, "Failed to delete vault file for UUID: " + uuidString);
-                return false;
-            }
+            return playerVaultFile.delete();
         } else {
-            DebugManager.log(DebugManager.Category.DEBUG, "No vault file exists for UUID: " + uuidString + " to delete.");
             return false;
         }
     }
