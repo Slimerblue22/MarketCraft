@@ -16,6 +16,7 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.UUID;
 
 import static com.marketcraft.Util.GUIUtils.createNamedItem;
+import static com.marketcraft.Util.GUIUtils.createPlayerHead;
 
 /**
  * Handles the graphical user interface for opening and interacting with a player's shop.
@@ -24,7 +25,15 @@ import static com.marketcraft.Util.GUIUtils.createNamedItem;
  * @see com.marketcraft.Util.GUIUtils
  */
 public class PlayerOpenShopGUI {
-    private static final int INVENTORY_SIZE = 54; // 6 rows x 9 columns for a double chest
+    private static final int INVENTORY_SIZE = 27;
+    private static final int SELL_TAG_SLOT = 10;
+    private static final int CHARGE_TAG_SLOT = 14;
+    private static final int CANCEL_SLOT = 22;
+    private static final int CONFIRM_SLOT = 16;
+    private static final int SELL_SLOT = 11;
+    private static final int CHARGE_SLOT = 15;
+    public static final int STOCK_INDICATOR_SLOT = 20;
+    public static final int OWNER_HEAD_SLOT = 4;
     private final PlayerShopManager playerShopManager;
     private final PlayerVaultManager playerVaultManager;
     private final MarketCraft marketCraft;
@@ -62,17 +71,15 @@ public class PlayerOpenShopGUI {
 
         ItemStack itemBeingSoldTag = createNamedItem(Material.NAME_TAG, "Selling");
         ItemStack itemCostTag = createNamedItem(Material.NAME_TAG, "Cost");
-        ItemStack confirmSelection = createNamedItem(Material.GREEN_WOOL, "Buy");
-        ItemStack cancelSelection = createNamedItem(Material.RED_WOOL, "Close shop");
+        ItemStack confirmSelection = createNamedItem(Material.LIME_STAINED_GLASS_PANE, "Buy");
+        ItemStack cancelSelection = createNamedItem(Material.RED_STAINED_GLASS_PANE, "Close shop");
 
         // Create the customized items
         ItemStack itemBeingSold = shopItems[0] != null ? shopItems[0] : new ItemStack(Material.AIR);
         ItemStack itemCost = shopItems[1] != null ? shopItems[1] : new ItemStack(Material.AIR);
         int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + stockCount + " in stock");
-        // This is a special item that allows the shop owner UUID to be shared within the GUI
-        // It's a bit strange, but it's the best I've got right now
-        ItemStack ownerIdentifier = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        ItemStack ownerIdentifier = createPlayerHead(shopOwnerUUID);
         ItemMeta meta = ownerIdentifier.getItemMeta();
         meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopOwnerUUID"), PersistentDataType.STRING, shopOwnerUUID.toString());
         ownerIdentifier.setItemMeta(meta);
@@ -83,14 +90,14 @@ public class PlayerOpenShopGUI {
         }
 
         // Replacing certain slots with the menu items
-        shopInventory.setItem(4, itemBeingSoldTag);
-        shopInventory.setItem(31, itemCostTag);
-        shopInventory.setItem(45, cancelSelection);
-        shopInventory.setItem(53, confirmSelection);
-        shopInventory.setItem(14, stockIndicator);
-        shopInventory.setItem(13, itemBeingSold);
-        shopInventory.setItem(40, itemCost);
-        shopInventory.setItem(0, ownerIdentifier);
+        shopInventory.setItem(SELL_TAG_SLOT, itemBeingSoldTag);
+        shopInventory.setItem(CHARGE_TAG_SLOT, itemCostTag);
+        shopInventory.setItem(CANCEL_SLOT, cancelSelection);
+        shopInventory.setItem(CONFIRM_SLOT, confirmSelection);
+        shopInventory.setItem(STOCK_INDICATOR_SLOT, stockIndicator);
+        shopInventory.setItem(SELL_SLOT, itemBeingSold);
+        shopInventory.setItem(CHARGE_SLOT, itemCost);
+        shopInventory.setItem(OWNER_HEAD_SLOT, ownerIdentifier);
 
         // Setup is done, create the inventory
         player.openInventory(shopInventory);

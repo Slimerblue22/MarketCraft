@@ -6,25 +6,29 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.marketcraft.Util.GUIUtils.createNamedItem;
 
 public class ShopTransaction {
     private final PlayerVaultManager playerVaultManager;
+    private static final int SELL_SLOT = 11;
+    private static final int CHARGE_SLOT = 15;
+    public static final int STOCK_INDICATOR_SLOT = 20;
 
     public ShopTransaction(PlayerVaultManager playerVaultManager) {
         this.playerVaultManager = playerVaultManager;
     }
 
     public void processTransaction(Player player, Inventory shopInventory, UUID shopOwnerUUID) {
-        ItemStack itemBeingSold = shopInventory.getItem(13);
-        ItemStack itemCost = shopInventory.getItem(40);
+        ItemStack itemBeingSold = shopInventory.getItem(SELL_SLOT);
+        ItemStack itemCost = shopInventory.getItem(CHARGE_SLOT);
 
         if (shopHasSufficientStock(player, shopOwnerUUID, itemBeingSold) && shopHasSufficientSpace(player, shopOwnerUUID, itemCost)) {
-            if (buyerHasEnoughItems(player, itemCost) && buyerHasInventorySpace(player)) {
+            if (buyerHasEnoughItems(player, Objects.requireNonNull(itemCost)) && buyerHasInventorySpace(player)) {
                 removeItemsFromBuyer(player, itemCost);
-                giveItemsToBuyer(player, itemBeingSold);
+                giveItemsToBuyer(player, Objects.requireNonNull(itemBeingSold));
                 playerVaultManager.removeItemsFromPlayerVault(shopOwnerUUID, itemBeingSold, itemBeingSold.getAmount());
                 playerVaultManager.addItemsToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount());
                 updateStockIndicator(shopInventory, shopOwnerUUID, itemBeingSold);
@@ -35,7 +39,7 @@ public class ShopTransaction {
     private void updateStockIndicator(Inventory shopInventory, UUID shopOwnerUUID, ItemStack itemBeingSold) {
         int newStockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + newStockCount + " in stock");
-        shopInventory.setItem(14, stockIndicator);
+        shopInventory.setItem(STOCK_INDICATOR_SLOT, stockIndicator);
     }
 
     private boolean shopHasSufficientSpace(Player player, UUID shopOwnerUUID, ItemStack itemCost) {

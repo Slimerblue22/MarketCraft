@@ -1,9 +1,14 @@
 package com.marketcraft.Util;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.UUID;
 
 /**
  * Utility class for Graphical User Interface (GUI) related functionalities in Minecraft.
@@ -25,5 +30,23 @@ public class GUIUtils {
         meta.displayName(Component.text(displayName));
         item.setItemMeta(meta);
         return item;
+    }
+
+    /**
+     * Creates an ItemStack representing a player's head with a custom display name.
+     * The display name is set to "{player name}'s Shop".
+     *
+     * @param playerUuid The UUID of the player whose head is to be created.
+     * @return An ItemStack of the player's head with the custom display name.
+     */
+    public static ItemStack createPlayerHead(UUID playerUuid) {
+        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta skullMeta = (SkullMeta) playerHead.getItemMeta();
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerUuid);
+        skullMeta.setOwningPlayer(player);
+        String displayName = player.getName() + "'s Shop";
+        skullMeta.displayName(Component.text(displayName));
+        playerHead.setItemMeta(skullMeta);
+        return playerHead;
     }
 }
