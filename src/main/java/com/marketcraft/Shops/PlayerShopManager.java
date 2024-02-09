@@ -1,21 +1,24 @@
 package com.marketcraft.Shops;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class PlayerShopManager {
     private final File shopsFolder;
 
     public PlayerShopManager(File pluginFolder) {
         this.shopsFolder = new File(pluginFolder, "Shops");
-        if (!shopsFolder.exists()) {
-            shopsFolder.mkdirs();
+        if (!shopsFolder.exists() && !shopsFolder.mkdirs()) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to create the Shops directory, the plugin may fail to function correctly!");
         }
     }
 
@@ -30,7 +33,7 @@ public class PlayerShopManager {
         try {
             config.save(playerShopFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.WARNING, "An error has occurred while saving" + player.getName() + "'s shop: ", e);
             player.sendMessage(Component.text("An error occurred while saving your shop. Please try again later."));
         }
     }
@@ -50,10 +53,10 @@ public class PlayerShopManager {
         ItemStack itemToSell = null;
         ItemStack itemToCharge = null;
         if (config.contains(basePath + ".itemToSell")) {
-            itemToSell = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToSell").getValues(false));
+            itemToSell = ItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection(basePath + ".itemToSell")).getValues(false));
         }
         if (config.contains(basePath + ".itemToCharge")) {
-            itemToCharge = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToCharge").getValues(false));
+            itemToCharge = ItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection(basePath + ".itemToCharge")).getValues(false));
         }
         return new ItemStack[]{itemToSell, itemToCharge};
     }
@@ -80,7 +83,7 @@ public class PlayerShopManager {
             config.save(playerShopFile);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().log(Level.WARNING, "An error has occurred while deleting a player's shop: ", e);
             return false;
         }
     }
