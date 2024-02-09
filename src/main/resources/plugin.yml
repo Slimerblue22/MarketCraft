@@ -6,14 +6,14 @@ api-version: '1.20'
 load: POSTWORLD
 commands:
   marketcraftdebug:
-    description: Command for controlling the debug system (does NOT include access to admin commands)
+    description: Command for controlling the debug system
     aliases: [mcd]
   marketcraft:
     description: Command for controlling most of the plugins functions
     aliases: [mc]
 permissions:
   marketcraft.debug:
-    description: Permission for debug commands
+    description: Permission for debug commands (does NOT include access to admin commands)
     default: op
   marketcraft.use:
     description: Permission for most of the plugins functions
