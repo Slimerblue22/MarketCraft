@@ -33,10 +33,8 @@ public class OpenShopListener implements Listener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (event.getView().title().equals(Component.text("Shop"))) {
             event.setCancelled(true);
-
             Player player = (Player) event.getWhoClicked();
             int clickedSlot = event.getRawSlot();
-
             if (clickedSlot == CONFIRM_SLOT) { // Buy button slot
                 // Retrieve the shop owner's UUID from the inventory
                 // This is used within the shop transaction logic to add and remove items from the shop owner's vault

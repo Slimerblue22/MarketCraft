@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
  * not for console.
  */
 public class OpenVaultCommand {
-
     private final PlayerVaultManager playerVaultManager;
     private final PlayerVaultGUI playerVaultGUI;
 
@@ -28,7 +27,6 @@ public class OpenVaultCommand {
             sender.sendMessage(Component.text("This command can only be used by players."));
             return false;
         }
-
         if (playerVaultManager.doesPlayerVaultExist(player.getUniqueId())) {
             sender.sendMessage(Component.text("Opening your existing vault..."));
             playerVaultGUI.openVault(player);

@@ -1,6 +1,5 @@
 package com.marketcraft.Shops;
 
-import com.marketcraft.Util.DebugManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -24,13 +23,10 @@ public class PlayerShopManager {
         UUID playerUUID = player.getUniqueId();
         String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
-
         // Serialize the ItemStacks (Allows storing of NBT data)
         config.set(basePath + ".itemToSell", itemToSell.serialize());
         config.set(basePath + ".itemToCharge", itemToCharge.serialize());
-
         try {
             config.save(playerShopFile);
         } catch (IOException e) {
@@ -46,25 +42,20 @@ public class PlayerShopManager {
         if (!playerShopFile.exists()) {
             return null;
         }
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
-
         // This then checks if the specific shop exists within the file
         if (!config.contains(basePath)) {
             return null;
         }
-
         ItemStack itemToSell = null;
         ItemStack itemToCharge = null;
-
         if (config.contains(basePath + ".itemToSell")) {
             itemToSell = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToSell").getValues(false));
         }
         if (config.contains(basePath + ".itemToCharge")) {
             itemToCharge = ItemStack.deserialize(config.getConfigurationSection(basePath + ".itemToCharge").getValues(false));
         }
-
-        return new ItemStack[] { itemToSell, itemToCharge };
+        return new ItemStack[]{itemToSell, itemToCharge};
     }
 
     public File[] listAllShops() {
@@ -75,21 +66,16 @@ public class PlayerShopManager {
         String basePath = "shops." + shopName;
         UUID playerUUID = UUID.fromString(uuidString);
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
-
         // This only checks if the file exists or not
         if (!playerShopFile.exists()) {
             return false;
         }
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
-
         // This then checks if the specific shop exists within the file
         if (!config.contains(basePath)) {
             return false;
         }
-
         config.set(basePath, null);
-
         try {
             config.save(playerShopFile);
             return true;

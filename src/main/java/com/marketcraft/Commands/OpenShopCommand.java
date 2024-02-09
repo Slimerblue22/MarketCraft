@@ -34,18 +34,14 @@ public class OpenShopCommand {
             sender.sendMessage(Component.text("This command can only be used by players."));
             return false;
         }
-
         if (args.length != 3) {
             sender.sendMessage(Component.text("Usage: /marketcraft openshop <playerName> <shopName>"));
             return false;
         }
-
         String playerName = args[1];
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(playerName);
         UUID shopOwnerUUID = offlinePlayer.getUniqueId();
-
         String shopName = args[2];
-
         playerOpenShopGUI.openPlayerShopGUI(player, shopOwnerUUID, shopName);
         return true;
     }

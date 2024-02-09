@@ -69,10 +69,8 @@ public class DebugManager {
     public static void log(Category category, String message) {
         if (isCategoryEnabled(category)) {
             String version = MarketCraft.getPluginVersion();
-
             // Plain text message for both console and players
             String plainMessage = "[MarketCraft " + version + " DEBUG] [" + category.name() + "] " + message;
-
             if (globalDebugDestination == DebugDestination.BOTH || globalDebugDestination == DebugDestination.PLAYER) {
                 for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                     if (onlinePlayer.hasPermission("marketcraft.debug")) {
@@ -80,7 +78,6 @@ public class DebugManager {
                     }
                 }
             }
-
             if (globalDebugDestination == DebugDestination.BOTH || globalDebugDestination == DebugDestination.CONSOLE) {
                 Bukkit.getLogger().info(plainMessage);
             }
@@ -110,7 +107,6 @@ public class DebugManager {
      * setting the global debug message destination, checking debug status, and displaying help messages.
      */
     public static class ToggleDebugCommand implements CommandExecutor, TabCompleter {
-
         /**
          * Executes the "MarketCraft debug" command.
          *
@@ -126,14 +122,11 @@ public class DebugManager {
                 sender.sendMessage(Component.text("You don't have permission to run this command."));
                 return false;
             }
-
             if (args.length == 0) {
                 handleHelpCommand(sender);
                 return false;
             }
-
             String subCommand = args[0].toLowerCase();
-
             return switch (subCommand) {
                 case "category" -> handleToggleCategoryCommand(sender, args);
                 case "destination" -> handleSetDestinationCommand(sender, args);
@@ -172,13 +165,11 @@ public class DebugManager {
         @Override
         public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
             List<String> completions = new ArrayList<>();
-
             if (args.length == 1) {
                 // Provide first level tab completion for subcommands
                 completions.addAll(Arrays.asList("category", "destination", "help", "status"));
             } else if (args.length == 2) {
                 String subCommand = args[0].toLowerCase();
-
                 if ("category".equalsIgnoreCase(subCommand)) {
                     // Tab complete for debug category names at the second level
                     completions.addAll(Arrays.stream(Category.values())
@@ -195,7 +186,6 @@ public class DebugManager {
                             .toList());
                 }
             }
-
             return completions;
         }
 
@@ -211,11 +201,9 @@ public class DebugManager {
                 player.sendMessage(Component.text("Usage: /marketcraftdebug category [Category]"));
                 return false;
             }
-
             String categoryName = args[1].toUpperCase();
             try {
                 Category category = Category.valueOf(categoryName);
-
                 // Toggle the category state and send appropriate feedback
                 if (isCategoryEnabled(category)) {
                     disableCategory(category);
@@ -230,7 +218,6 @@ public class DebugManager {
                 player.sendMessage(Component.text("Available categories: " + Arrays.toString(Category.values())));
                 return false;
             }
-
             return true;
         }
 
@@ -246,7 +233,6 @@ public class DebugManager {
                 player.sendMessage(Component.text("Usage: /marketcraftdebug destination [Destination]"));
                 return false;
             }
-
             try {
                 DebugDestination destination = DebugDestination.valueOf(args[1].toUpperCase());
                 globalDebugDestination = destination;
@@ -257,7 +243,6 @@ public class DebugManager {
                 player.sendMessage(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values())));
                 return false;
             }
-
             return true;
         }
 
@@ -265,15 +250,12 @@ public class DebugManager {
          * Displays the current status of the debug system, including enabled categories and the global debug message destination.
          *
          * @param player The player to whom the status will be displayed.
-         * @return True indicating the command was handled successfully.
          */
         private boolean handleDebugStatusCommand(@NotNull CommandSender player) {
             TextComponent.Builder messageBuilder = Component.text();
-
             // Constructing header section
             messageBuilder.append(Component.text("Debug System Status")
                     .append(Component.newline()));
-
             // Listing enabled categories
             messageBuilder.append(Component.text("Enabled Categories:"))
                     .append(Component.newline());
@@ -286,11 +268,9 @@ public class DebugManager {
                 messageBuilder.append(Component.text("No categories currently enabled."))
                         .append(Component.newline());
             }
-
             // Displaying global debug message destination
             messageBuilder.append(Component.text("Debug messages are being sent to: " + globalDebugDestination.name()))
                     .append(Component.newline());
-
             // Sending the formatted status message to the player
             player.sendMessage(messageBuilder.build());
             return true;
@@ -304,25 +284,20 @@ public class DebugManager {
          */
         private boolean handleHelpCommand(@NotNull CommandSender player) {
             TextComponent.Builder messageBuilder = Component.text();
-
             // Constructing the header
             messageBuilder.append(Component.text("MarketCraft Debugging System")
                     .append(Component.newline()));
-
             // Introduction section
             messageBuilder.append(Component.text("The MarketCraft Debugging system provides insights into the internal operations of the MarketCraft plugin. Here's how to use it:"))
                     .append(Component.newline());
-
             // Adding the documentation link
             TextComponent linkMessage = Component.text("For more details, click here to visit the debugging documentation.")
                     .clickEvent(ClickEvent.openUrl("http://www.example.com"))  // Replace with the actual documentation link
                     .hoverEvent(HoverEvent.showText(Component.text("Click to open the documentation website!")));
             messageBuilder.append(linkMessage).append(Component.newline());
-
             // Listing available debug commands
             messageBuilder.append(Component.text("Available Debug Commands:"))
                     .append(Component.newline());
-
             // Detailing each command
             // Command: category
             messageBuilder.append(Component.text("/marketcraftdebug category [Category]"))
@@ -330,23 +305,19 @@ public class DebugManager {
                     .append(Component.newline())
                     .append(Component.text("Available categories: " + Arrays.toString(Category.values())))
                     .append(Component.newline());
-
             // Command: destination
             messageBuilder.append(Component.text("/marketcraftdebug destination [Destination]"))
                     .append(Component.text(" - Set the global destination for debug messages."))
                     .append(Component.newline())
                     .append(Component.text("Available destinations: " + Arrays.toString(DebugDestination.values())))
                     .append(Component.newline());
-
             // Command: status
             messageBuilder.append(Component.text("/marketcraftdebug status"))
                     .append(Component.text(" - View the currently enabled debug categories and the global debug message destination."))
                     .append(Component.newline());
-
             // Command: help
             messageBuilder.append(Component.text("/marketcraftdebug help"))
                     .append(Component.text(" - Display this help message."));
-
             // Sending the formatted help message to the player
             player.sendMessage(messageBuilder.build());
             return true;

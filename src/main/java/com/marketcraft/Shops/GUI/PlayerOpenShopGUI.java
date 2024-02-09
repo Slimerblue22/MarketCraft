@@ -22,6 +22,7 @@ import static com.marketcraft.Util.GUIUtils.createPlayerHead;
  * Handles the graphical user interface for opening and interacting with a player's shop.
  * This class manages the creation and display of the shop inventory, allowing players to view and interact with
  * items for sale, including their costs and available stock.
+ *
  * @see com.marketcraft.Util.GUIUtils
  */
 public class PlayerOpenShopGUI {
@@ -41,9 +42,9 @@ public class PlayerOpenShopGUI {
     /**
      * Constructs an instance of PlayerOpenShopGUI with the given shop and vault managers.
      *
-     * @param playerShopManager The manager responsible for handling player shop data.
+     * @param playerShopManager  The manager responsible for handling player shop data.
      * @param playerVaultManager The manager responsible for handling player vault data.
-     * @param marketCraft The main plugin class.
+     * @param marketCraft        The main plugin class.
      */
     public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
         this.playerShopManager = playerShopManager;
@@ -57,7 +58,7 @@ public class PlayerOpenShopGUI {
      *
      * @param player        The player for whom the shop GUI is to be opened.
      * @param shopOwnerUUID The UUID of the shop owner whose items are being displayed in the shop.
-     * @param shopName The name of the shop that the player is accessing.
+     * @param shopName      The name of the shop that the player is accessing.
      */
     public void openPlayerShopGUI(Player player, UUID shopOwnerUUID, String shopName) {
         // If the method returns null, we can assume the shop does not exist or is invalid
@@ -66,14 +67,11 @@ public class PlayerOpenShopGUI {
             player.sendMessage("Shop does not exist or is invalid");
             return;
         }
-
         Inventory shopInventory = Bukkit.createInventory(player, INVENTORY_SIZE, Component.text("Shop"));
-
         ItemStack itemBeingSoldTag = createNamedItem(Material.NAME_TAG, "Selling");
         ItemStack itemCostTag = createNamedItem(Material.NAME_TAG, "Cost");
         ItemStack confirmSelection = createNamedItem(Material.LIME_STAINED_GLASS_PANE, "Buy");
         ItemStack cancelSelection = createNamedItem(Material.RED_STAINED_GLASS_PANE, "Close shop");
-
         // Create the customized items
         ItemStack itemBeingSold = shopItems[0] != null ? shopItems[0] : new ItemStack(Material.AIR);
         ItemStack itemCost = shopItems[1] != null ? shopItems[1] : new ItemStack(Material.AIR);
@@ -83,12 +81,10 @@ public class PlayerOpenShopGUI {
         ItemMeta meta = ownerIdentifier.getItemMeta();
         meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopOwnerUUID"), PersistentDataType.STRING, shopOwnerUUID.toString());
         ownerIdentifier.setItemMeta(meta);
-
         // Fill the entire inventory with the background
         for (int i = 0; i < INVENTORY_SIZE; i++) {
             shopInventory.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
         }
-
         // Replacing certain slots with the menu items
         shopInventory.setItem(SELL_TAG_SLOT, itemBeingSoldTag);
         shopInventory.setItem(CHARGE_TAG_SLOT, itemCostTag);
@@ -98,7 +94,6 @@ public class PlayerOpenShopGUI {
         shopInventory.setItem(SELL_SLOT, itemBeingSold);
         shopInventory.setItem(CHARGE_SLOT, itemCost);
         shopInventory.setItem(OWNER_HEAD_SLOT, ownerIdentifier);
-
         // Setup is done, create the inventory
         player.openInventory(shopInventory);
     }

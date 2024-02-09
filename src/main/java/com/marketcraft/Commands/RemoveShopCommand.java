@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
  * action and validates the provided UUID before attempting to remove the associated shop.
  */
 public class RemoveShopCommand {
-
     private final PlayerShopManager playerShopManager;
 
     public RemoveShopCommand(PlayerShopManager playerShopManager) {
@@ -23,15 +22,12 @@ public class RemoveShopCommand {
             sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
-
         if (args.length != 3) {
             sender.sendMessage(Component.text("Usage: /marketcraft removeshop <playerUUID> <shopName>"));
             return false;
         }
-
         String uuidString = args[1];
         String shopName = args[2];
-
         try {
             boolean isRemoved = playerShopManager.deletePlayerShop(uuidString, shopName);
             if (isRemoved) {

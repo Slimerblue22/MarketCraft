@@ -38,18 +38,15 @@ public class ShopSetupListener implements Listener {
         InventoryHolder holder = event.getInventory().getHolder();
         if (holder instanceof Player player && event.getView().title().equals(Component.text("Shop Setup"))) {
             Inventory shopSetupInventory = event.getInventory();
-
             List<ItemStack> itemsToReturn = new ArrayList<>();
             ItemStack itemToSell = shopSetupInventory.getItem(SELL_SLOT);
             ItemStack itemToCharge = shopSetupInventory.getItem(CHARGE_SLOT);
-
             if (itemToSell != null && itemToSell.getType() != Material.AIR) {
                 itemsToReturn.add(itemToSell);
             }
             if (itemToCharge != null && itemToCharge.getType() != Material.AIR) {
                 itemsToReturn.add(itemToCharge);
             }
-
             returnItemsToPlayer(player, itemsToReturn);
         }
     }
@@ -63,7 +60,6 @@ public class ShopSetupListener implements Listener {
                 itemsDropped = true;
             }
         }
-
         // If boolean was changed to true, one or more items were dropped, notify the player
         if (itemsDropped) {
             player.sendMessage(Component.text("Your inventory is full. Items have been dropped at your location."));
@@ -76,7 +72,6 @@ public class ShopSetupListener implements Listener {
         if (holder instanceof Player player && event.getView().title().equals(Component.text("Shop Setup"))) {
             boolean isTopInventory = event.getView().getTopInventory().getType() == InventoryType.CHEST &&
                     event.getRawSlot() < event.getView().getTopInventory().getSize();
-
             handleShiftClick(event, player, isTopInventory);
             if (isTopInventory) {
                 handleItemClick(event, player);
@@ -94,7 +89,6 @@ public class ShopSetupListener implements Listener {
 
     private void handleItemClick(InventoryClickEvent event, Player player) {
         int slot = event.getRawSlot();
-
         switch (slot) {
             case SELL_SLOT:
             case CHARGE_SLOT:
@@ -127,7 +121,6 @@ public class ShopSetupListener implements Listener {
         ItemMeta shopNameMeta = Objects.requireNonNull(shopNameItem).getItemMeta();
         Component displayNameComponent = Objects.requireNonNull(shopNameMeta.displayName());
         String shopName = PlainTextComponentSerializer.plainText().serialize(displayNameComponent);
-
         if (itemToSell != null && itemToCharge != null) {
             playerShopManager.savePlayerShop(player, shopName, itemToSell, itemToCharge);
             player.sendMessage(Component.text("Shop '" + shopName + "' setup confirmed!"));

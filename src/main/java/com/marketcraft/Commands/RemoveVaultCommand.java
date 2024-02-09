@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
  * action and validates the provided UUID before attempting to remove the associated vault.
  */
 public class RemoveVaultCommand {
-
     private final PlayerVaultManager playerVaultManager;
 
     public RemoveVaultCommand(PlayerVaultManager playerVaultManager) {
@@ -23,12 +22,10 @@ public class RemoveVaultCommand {
             sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
-
         if (args.length != 2) {
             sender.sendMessage(Component.text("Usage: /marketcraft removevault <playerUUID>"));
             return false;
         }
-
         String uuidString = args[1];
         try {
             boolean isRemoved = playerVaultManager.removePlayerVaultFile(uuidString);

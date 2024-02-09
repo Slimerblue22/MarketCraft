@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
  * essential information to guide users in their initial interaction with the plugin.
  */
 public class HelpCommand {
-
     public boolean handleHelpCommand(CommandSender sender) {
         Component welcomeMessage = Component.text()
                 .append(Component.text("Welcome to MarketCraft!"))
@@ -20,7 +19,6 @@ public class HelpCommand {
                 // TODO Don't forget to add instructions!
                 .append(Component.text("To begin [PLACEHOLDER TO FILL LATER WITH INSTRUCTIONS]"))
                 .build();
-
         sender.sendMessage(welcomeMessage);
         return true;
     }

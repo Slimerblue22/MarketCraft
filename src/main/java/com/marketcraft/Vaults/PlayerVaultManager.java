@@ -1,7 +1,5 @@
 package com.marketcraft.Vaults;
 
-import com.marketcraft.Util.DebugManager;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -12,7 +10,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 public class PlayerVaultManager {
-
     private final File vaultsFolder;
 
     public PlayerVaultManager(File pluginFolder) {
@@ -29,22 +26,17 @@ public class PlayerVaultManager {
 
     public void createPlayerVaultFile(Player player) {
         UUID playerUUID = player.getUniqueId();
-
         if (!doesPlayerVaultExist(playerUUID)) {
             try {
                 File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
                 boolean isNewFileCreated = playerVaultFile.createNewFile();
-
                 if (isNewFileCreated) {
                     YamlConfiguration config = new YamlConfiguration();
-
                     // Initialize with a basic structure otherwise we get NPE errors when trying to open it
                     config.createSection("vault"); // Create an empty 'vault' section
-
                     // Save the file with the initial structure
                     config.save(playerVaultFile);
                 }
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -56,19 +48,15 @@ public class PlayerVaultManager {
         if (!playerVaultFile.exists()) {
             return 0;
         }
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
         int itemCount = 0;
-
         for (String key : config.getConfigurationSection("vault").getKeys(false)) {
             ItemStack item = ItemStack.deserialize(config.getConfigurationSection("vault." + key).getValues(false));
-
             // Check if the item is similar to the one we are looking for
             if (item.isSimilar(itemToCheck)) {
                 itemCount += item.getAmount();
             }
         }
-
         return itemCount;
     }
 
@@ -77,11 +65,9 @@ public class PlayerVaultManager {
         if (!playerVaultFile.exists()) {
             return;
         }
-
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
             boolean itemAdded = false;
-
             // Check existing slots for a match or an empty slot
             for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
                 String slotKey = "vault.slot_" + i;
@@ -103,12 +89,10 @@ public class PlayerVaultManager {
                     break;
                 }
             }
-
             // Save changes if an item was added
             if (itemAdded) {
                 config.save(playerVaultFile);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,14 +103,11 @@ public class PlayerVaultManager {
         if (!playerVaultFile.exists()) {
             return;
         }
-
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
             boolean itemRemoved = false;
-
             for (String key : config.getConfigurationSection("vault").getKeys(false)) {
                 ItemStack item = ItemStack.deserialize(config.getConfigurationSection("vault." + key).getValues(false));
-
                 if (item.isSimilar(itemToRemove)) {
                     int currentAmount = item.getAmount();
                     if (currentAmount > amount) {
@@ -141,11 +122,9 @@ public class PlayerVaultManager {
                     }
                 }
             }
-
             if (itemRemoved) {
                 config.save(playerVaultFile);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,9 +135,7 @@ public class PlayerVaultManager {
         if (!playerVaultFile.exists()) {
             return false;
         }
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
-
         // Check existing slots for a match or an empty slot
         for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
             String slotKey = "vault.slot_" + i;
@@ -176,7 +153,6 @@ public class PlayerVaultManager {
                 return true;
             }
         }
-
         // No available slot found
         return false;
     }
@@ -195,9 +171,7 @@ public class PlayerVaultManager {
     public void savePlayerVault(Player player, Inventory vaultInventory) {
         File playerVaultFile = getPlayerVaultFile(player.getUniqueId());
         if (playerVaultFile == null) return;
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
-
         for (int i = 0; i < vaultInventory.getSize(); i++) {
             ItemStack item = vaultInventory.getItem(i);
             if (item != null) {
@@ -206,7 +180,6 @@ public class PlayerVaultManager {
                 config.set("vault.slot_" + i, null);
             }
         }
-
         // TODO: Need better error handling here, otherwise people may lose items or even duplicate them!
         try {
             config.save(playerVaultFile);
@@ -218,7 +191,6 @@ public class PlayerVaultManager {
     public boolean removePlayerVaultFile(String uuidString) {
         UUID playerUUID = UUID.fromString(uuidString);
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
-
         if (doesPlayerVaultExist(playerUUID)) {
             return playerVaultFile.delete();
         } else {

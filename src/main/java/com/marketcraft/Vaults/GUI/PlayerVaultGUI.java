@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Set;
 
 public class PlayerVaultGUI {
-
     private final PlayerVaultManager playerVaultManager;
     private static final int VAULT_SIZE = 27; // TODO: Make this configurable later
 
@@ -29,10 +28,8 @@ public class PlayerVaultGUI {
             player.sendMessage(Component.text("An unexpected error has occurred, please wait a moment then try again."));
             return;
         }
-
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
         Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
-
         // Load items from YML file
         Set<String> keys = Objects.requireNonNull(config.getConfigurationSection("vault")).getKeys(false);
         for (String key : keys) {
@@ -41,7 +38,6 @@ public class PlayerVaultGUI {
             int slot = Integer.parseInt(key.replace("slot_", ""));
             vaultInventory.setItem(slot, item);
         }
-
         player.openInventory(vaultInventory);
     }
 }

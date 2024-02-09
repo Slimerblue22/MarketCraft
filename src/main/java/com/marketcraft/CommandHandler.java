@@ -40,7 +40,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final VersionCommand versionCommand;
     private final OpenVaultCommand openVaultCommand;
     private final RemoveVaultCommand removeVaultCommand;
-    private final MarketCraft marketCraft;
     private final ListVaultsCommand listVaultsCommand;
     private final CreateShopCommand createShopCommand;
     private final RemoveShopCommand removeShopCommand;
@@ -50,7 +49,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
-        this.marketCraft = marketCraft;
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager);
@@ -79,14 +77,11 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
-
         if (args.length == 0) {
             handleUnknownCommand(sender);
             return false;
         }
-
         String subCommand = args[0].toLowerCase();
-
         return switch (subCommand) {
             case "help" -> helpCommand.handleHelpCommand(sender);
             case "version" -> versionCommand.handleVersionCommand(sender);
@@ -119,7 +114,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         List<String> completions = new ArrayList<>();
-
         if (args.length == 1) {
             for (String cmd : COMMANDS) {
                 if (cmd.startsWith(args[0].toLowerCase())) {
@@ -127,7 +121,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 }
             }
         }
-
         return completions;
     }
 

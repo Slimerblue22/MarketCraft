@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,7 +25,6 @@ public class ShopTransaction {
     public void processTransaction(Player player, Inventory shopInventory, UUID shopOwnerUUID) {
         ItemStack itemBeingSold = shopInventory.getItem(SELL_SLOT);
         ItemStack itemCost = shopInventory.getItem(CHARGE_SLOT);
-
         if (shopHasSufficientStock(player, shopOwnerUUID, itemBeingSold) && shopHasSufficientSpace(player, shopOwnerUUID, itemCost)) {
             if (buyerHasEnoughItems(player, Objects.requireNonNull(itemCost)) && buyerHasInventorySpace(player)) {
                 removeItemsFromBuyer(player, itemCost);
@@ -77,7 +77,6 @@ public class ShopTransaction {
         Inventory playerInventory = player.getInventory();
         HashMap<Integer, ? extends ItemStack> allItems = playerInventory.all(cost.getType());
         int totalAmount = allItems.values().stream().mapToInt(ItemStack::getAmount).sum();
-
         if (totalAmount < cost.getAmount()) {
             player.sendMessage("You do not have enough items to make this purchase.");
             return false;

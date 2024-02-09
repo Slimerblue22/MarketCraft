@@ -14,7 +14,6 @@ import java.util.UUID;
  * Utility class for Graphical User Interface (GUI) related functionalities in Minecraft.
  */
 public class GUIUtils {
-
     /**
      * Creates an ItemStack with a specified material and display name.
      * This utility method simplifies the process of creating items for use in

@@ -14,7 +14,6 @@ import java.io.File;
  * and it provides functionality to navigate through the shops in a paginated manner.
  */
 public class ListShopsCommand {
-
     private static final int ENTRIES_PER_PAGE = 10;
     private final PlayerShopManager playerShopManager;
 
@@ -27,7 +26,6 @@ public class ListShopsCommand {
             sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
-
         // Default to page 1 if no page number is provided
         int page = 1;
         if (args.length > 1) {
@@ -42,29 +40,23 @@ public class ListShopsCommand {
                 return false;
             }
         }
-
         File[] shopFiles = playerShopManager.listAllShops();
         if (shopFiles == null || shopFiles.length == 0) {
             sender.sendMessage(Component.text("No shops found."));
             return true;
         }
-
         int totalEntries = shopFiles.length;
         int totalPages = (int) Math.ceil((double) totalEntries / ENTRIES_PER_PAGE);
-
         if (page > totalPages) {
             sender.sendMessage(Component.text("Page " + page + " does not exist."));
             return false;
         }
-
         int start = (page - 1) * ENTRIES_PER_PAGE;
         int end = Math.min(start + ENTRIES_PER_PAGE, totalEntries);
-
         sender.sendMessage(Component.text("Shops (Page " + page + " of " + totalPages + "):"));
         for (int i = start; i < end; i++) {
             sender.sendMessage(Component.text(shopFiles[i].getName()));
         }
-
         return true;
     }
 }

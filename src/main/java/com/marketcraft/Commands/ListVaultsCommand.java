@@ -14,7 +14,6 @@ import java.io.File;
  * and it provides functionality to navigate through the vaults in a paginated manner.
  */
 public class ListVaultsCommand {
-
     private final PlayerVaultManager playerVaultManager;
     private static final int ENTRIES_PER_PAGE = 10;
 
@@ -27,7 +26,6 @@ public class ListVaultsCommand {
             sender.sendMessage(Component.text("You don't have permission to run this command."));
             return false;
         }
-
         // Default to page 1 if no page number is provided
         int page = 1;
         if (args.length > 1) {
@@ -42,29 +40,23 @@ public class ListVaultsCommand {
                 return false;
             }
         }
-
         File[] vaultFiles = playerVaultManager.listAllVaults();
         if (vaultFiles == null || vaultFiles.length == 0) {
             sender.sendMessage(Component.text("No vaults found."));
             return true;
         }
-
         int totalEntries = vaultFiles.length;
         int totalPages = (int) Math.ceil((double) totalEntries / ENTRIES_PER_PAGE);
-
         if (page > totalPages) {
             sender.sendMessage(Component.text("Page " + page + " does not exist."));
             return false;
         }
-
         int start = (page - 1) * ENTRIES_PER_PAGE;
         int end = Math.min(start + ENTRIES_PER_PAGE, totalEntries);
-
         sender.sendMessage(Component.text("Vaults (Page " + page + " of " + totalPages + "):"));
         for (int i = start; i < end; i++) {
             sender.sendMessage(Component.text(vaultFiles[i].getName()));
         }
-
         return true;
     }
 }
