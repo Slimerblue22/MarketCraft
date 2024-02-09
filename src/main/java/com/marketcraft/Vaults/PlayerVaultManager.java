@@ -1,6 +1,5 @@
 package com.marketcraft.Vaults;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -43,7 +42,6 @@ public class PlayerVaultManager {
                 }
             } catch (IOException e) {
                 Bukkit.getLogger().log(Level.WARNING, "An error has occurred while creating" + player.getName() + "'s vault: ", e);
-                player.sendMessage(Component.text("An error occurred creating your vault. Please try again later."));
             }
         }
     }
