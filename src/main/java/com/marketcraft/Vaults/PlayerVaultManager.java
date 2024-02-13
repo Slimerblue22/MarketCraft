@@ -110,37 +110,38 @@ public class PlayerVaultManager {
         }
     }
 
-    public void removeItemsFromPlayerVault(UUID playerUUID, ItemStack itemToRemove, int amount, String shopName) {
+    public void removeItemsFromPlayerVault(UUID playerUUID, ItemStack itemToRemove, int amountToRemove, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
             return;
         }
         try {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
-            boolean itemRemoved = false;
             String shopVaultPath = "vault." + shopName;
-            // Iterate through the specific shop's vault
+            // Track the remaining amount to remove
+            int remainingAmount = amountToRemove;
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
             if (shopVaultSection != null) {
                 for (String key : shopVaultSection.getKeys(false)) {
+                    if (remainingAmount <= 0) break; // Stop if the required amount has been removed
                     String fullKeyPath = shopVaultPath + "." + key;
                     ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
                     if (item.isSimilar(itemToRemove)) {
                         int currentAmount = item.getAmount();
-                        if (currentAmount > amount) {
-                            item.setAmount(currentAmount - amount);
+                        if (currentAmount > remainingAmount) {
+                            item.setAmount(currentAmount - remainingAmount);
                             config.set(fullKeyPath, item.serialize());
-                            itemRemoved = true;
-                            break;
-                        } else if (currentAmount == amount) {
-                            config.set(fullKeyPath, null);
-                            itemRemoved = true;
-                            break;
+                            remainingAmount = 0;
+                        } else {
+                            // Remove the entire stack and decrement the remaining amount
+                            remainingAmount -= currentAmount;
+                            config.set(fullKeyPath, null); // Remove the item stack from the slot
                         }
                     }
                 }
             }
-            if (itemRemoved) {
+            // Save changes if any items were removed
+            if (remainingAmount < amountToRemove) {
                 config.save(playerVaultFile);
             }
         } catch (Exception e) {
