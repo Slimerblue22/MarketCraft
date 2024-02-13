@@ -41,11 +41,13 @@ public class OpenShopListener implements Listener {
                 ItemStack ownerIdentifier = event.getInventory().getItem(OWNER_HEAD_SLOT);
                 ItemMeta meta = Objects.requireNonNull(ownerIdentifier).getItemMeta();
                 PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-                NamespacedKey key = new NamespacedKey(marketCraft, "shopOwnerUUID");
-                String uuidString = dataContainer.get(key, PersistentDataType.STRING);
+                NamespacedKey ownerKey = new NamespacedKey(marketCraft, "shopOwnerUUID");
+                String uuidString = dataContainer.get(ownerKey, PersistentDataType.STRING);
                 UUID shopOwnerUUID = UUID.fromString(Objects.requireNonNull(uuidString));
+                NamespacedKey shopNameKey = new NamespacedKey(marketCraft, "shopName");
+                String shopName = dataContainer.get(shopNameKey, PersistentDataType.STRING);
                 // Sending the necessary information to the transaction handler
-                shopTransaction.processTransaction(player, event.getInventory(), shopOwnerUUID);
+                shopTransaction.processTransaction(player, event.getInventory(), shopOwnerUUID, shopName);
             } else if (clickedSlot == CANCEL_SLOT) { // Close button slot
                 player.closeInventory();
             }

@@ -1,5 +1,7 @@
 package com.marketcraft.Commands;
 
+import com.marketcraft.MarketCraft;
+import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.GUI.PlayerVaultGUI;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -16,24 +18,36 @@ import org.bukkit.entity.Player;
 public class OpenVaultCommand {
     private final PlayerVaultManager playerVaultManager;
     private final PlayerVaultGUI playerVaultGUI;
+    private final PlayerShopManager playerShopManager;
 
-    public OpenVaultCommand(PlayerVaultManager playerVaultManager) {
+    public OpenVaultCommand(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
         this.playerVaultManager = playerVaultManager;
-        this.playerVaultGUI = new PlayerVaultGUI(playerVaultManager);
+        this.playerVaultGUI = new PlayerVaultGUI(playerVaultManager, marketCraft);
+        this.playerShopManager = playerShopManager;
     }
 
-    public boolean handleOpenVaultCommand(CommandSender sender) {
+    public boolean handleOpenVaultCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));
             return false;
         }
-        if (playerVaultManager.doesPlayerVaultExist(player.getUniqueId())) {
-            sender.sendMessage(Component.text("Opening your existing vault..."));
-            playerVaultGUI.openVault(player);
+        if (args.length != 2) {
+            sender.sendMessage(Component.text("Usage: /marketcraft openvault <shopName>"));
+            return false;
+        }
+        String shopName = args[1];
+        if (playerShopManager.doesPlayerShopExist(player, shopName)) {
+            if (playerVaultManager.doesPlayerVaultExist(player.getUniqueId())) {
+                sender.sendMessage(Component.text("Opening your existing vault for shop: " + shopName));
+                playerVaultGUI.openVault(player, shopName);
+            } else {
+                sender.sendMessage(Component.text("Creating and opening a new vault for shop: " + shopName));
+                playerVaultManager.createPlayerVaultFile(player, shopName);
+                playerVaultGUI.openVault(player, shopName);
+            }
         } else {
-            sender.sendMessage(Component.text("Creating and opening a new vault..."));
-            playerVaultManager.createPlayerVaultFile(player);
-            playerVaultGUI.openVault(player);
+            sender.sendMessage(Component.text("The shop '" + shopName + "' does not exist, create a shop first."));
+            return false;
         }
         return true;
     }

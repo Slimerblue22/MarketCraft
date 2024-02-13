@@ -87,4 +87,15 @@ public class PlayerShopManager {
             return false;
         }
     }
+
+    public boolean doesPlayerShopExist(Player player, String shopName) {
+        UUID playerUUID = player.getUniqueId();
+        String basePath = "shops." + shopName;
+        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+        if (!playerShopFile.exists()) {
+            return false;
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
+        return config.contains(basePath);
+    }
 }

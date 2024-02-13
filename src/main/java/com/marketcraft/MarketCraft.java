@@ -19,7 +19,7 @@ public final class MarketCraft extends JavaPlugin {
         pluginVersion = this.getDescription().getVersion();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
         PlayerShopManager playerShopManager = new PlayerShopManager(getDataFolder());
-        getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager), this);
+        getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager, this), this);
         getServer().getPluginManager().registerEvents(new ShopSetupListener(playerShopManager), this);
         getServer().getPluginManager().registerEvents(new OpenShopListener(playerVaultManager, this), this);
         Objects.requireNonNull(getCommand("marketcraftdebug")).setExecutor(new DebugManager.ToggleDebugCommand());

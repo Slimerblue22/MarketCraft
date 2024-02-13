@@ -75,11 +75,12 @@ public class PlayerOpenShopGUI {
         // Create the customized items
         ItemStack itemBeingSold = shopItems[0] != null ? shopItems[0] : new ItemStack(Material.AIR);
         ItemStack itemCost = shopItems[1] != null ? shopItems[1] : new ItemStack(Material.AIR);
-        int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
+        int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold, shopName);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + stockCount + " in stock");
         ItemStack ownerIdentifier = createPlayerHead(shopOwnerUUID);
         ItemMeta meta = ownerIdentifier.getItemMeta();
         meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopOwnerUUID"), PersistentDataType.STRING, shopOwnerUUID.toString());
+        meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
         ownerIdentifier.setItemMeta(meta);
         // Fill the entire inventory with the background
         for (int i = 0; i < INVENTORY_SIZE; i++) {

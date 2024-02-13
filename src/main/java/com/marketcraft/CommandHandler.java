@@ -51,7 +51,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
-        this.openVaultCommand = new OpenVaultCommand(playerVaultManager);
+        this.openVaultCommand = new OpenVaultCommand(playerVaultManager, playerShopManager, marketCraft);
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
         this.createShopCommand = new CreateShopCommand();
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
@@ -85,7 +85,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         return switch (subCommand) {
             case "help" -> helpCommand.handleHelpCommand(sender);
             case "version" -> versionCommand.handleVersionCommand(sender);
-            case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender);
+            case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender, args);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender, args);
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin

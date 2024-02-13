@@ -22,36 +22,36 @@ public class ShopTransaction {
         this.playerVaultManager = playerVaultManager;
     }
 
-    public void processTransaction(Player player, Inventory shopInventory, UUID shopOwnerUUID) {
+    public void processTransaction(Player player, Inventory shopInventory, UUID shopOwnerUUID, String shopName) {
         ItemStack itemBeingSold = shopInventory.getItem(SELL_SLOT);
         ItemStack itemCost = shopInventory.getItem(CHARGE_SLOT);
-        if (shopHasSufficientStock(player, shopOwnerUUID, itemBeingSold) && shopHasSufficientSpace(player, shopOwnerUUID, itemCost)) {
+        if (shopHasSufficientStock(player, shopOwnerUUID, itemBeingSold, shopName) && shopHasSufficientSpace(player, shopOwnerUUID, itemCost, shopName)) {
             if (buyerHasEnoughItems(player, Objects.requireNonNull(itemCost)) && buyerHasInventorySpace(player)) {
                 removeItemsFromBuyer(player, itemCost);
                 giveItemsToBuyer(player, Objects.requireNonNull(itemBeingSold));
-                playerVaultManager.removeItemsFromPlayerVault(shopOwnerUUID, itemBeingSold, itemBeingSold.getAmount());
-                playerVaultManager.addItemsToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount());
-                updateStockIndicator(shopInventory, shopOwnerUUID, itemBeingSold);
+                playerVaultManager.removeItemsFromPlayerVault(shopOwnerUUID, itemBeingSold, itemBeingSold.getAmount(), shopName);
+                playerVaultManager.addItemsToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount(), shopName);
+                updateStockIndicator(shopInventory, shopOwnerUUID, itemBeingSold, shopName);
             }
         }
     }
 
-    private void updateStockIndicator(Inventory shopInventory, UUID shopOwnerUUID, ItemStack itemBeingSold) {
-        int newStockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
+    private void updateStockIndicator(Inventory shopInventory, UUID shopOwnerUUID, ItemStack itemBeingSold, String shopName) {
+        int newStockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold, shopName);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + newStockCount + " in stock");
         shopInventory.setItem(STOCK_INDICATOR_SLOT, stockIndicator);
     }
 
-    private boolean shopHasSufficientSpace(Player player, UUID shopOwnerUUID, ItemStack itemCost) {
-        if (!playerVaultManager.canAddItemToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount())) {
+    private boolean shopHasSufficientSpace(Player player, UUID shopOwnerUUID, ItemStack itemCost, String shopName) {
+        if (!playerVaultManager.canAddItemToPlayerVault(shopOwnerUUID, itemCost, itemCost.getAmount(), shopName)) {
             player.sendMessage("Shop owner's vault does not have enough space for the transaction.");
             return false;
         }
         return true;
     }
 
-    private boolean shopHasSufficientStock(Player player, UUID shopOwnerUUID, ItemStack itemBeingSold) {
-        int stockInVault = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold);
+    private boolean shopHasSufficientStock(Player player, UUID shopOwnerUUID, ItemStack itemBeingSold, String shopName) {
+        int stockInVault = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold, shopName);
         if (stockInVault < itemBeingSold.getAmount()) {
             player.sendMessage("Insufficient stock in the shop for this purchase.");
             return false;
