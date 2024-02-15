@@ -1,3 +1,12 @@
+/*
+ * Marketcraft is licensed under the MIT License.
+ *
+ * Please view the full license here for more information:
+ * https://github.com/Slimerblue22/MarketCraft/blob/main/LICENSE
+ *
+ * Copyright (c) 2024 Slimerblue22
+ */
+
 package com.marketcraft.Shops.GUI;
 
 import com.marketcraft.MarketCraft;
