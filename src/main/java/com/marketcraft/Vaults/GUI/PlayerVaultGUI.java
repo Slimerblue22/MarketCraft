@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
@@ -20,7 +20,9 @@ import java.util.*;
 public class PlayerVaultGUI {
     private final PlayerVaultManager playerVaultManager;
     private final MarketCraft marketCraft;
-    private static final int VAULT_SIZE = 27; // TODO: Make this configurable later
+    private static final int VAULT_SIZE = 54;
+    private static final int[] DIVIDER_LINE_SLOTS = {13, 22, 31, 40, 49};
+    private static final int INFO_BOOK_SLOT = 4;
 
     public PlayerVaultGUI(PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
         this.playerVaultManager = playerVaultManager;
@@ -28,25 +30,36 @@ public class PlayerVaultGUI {
     }
 
     public void openVault(Player player, String shopName) {
-        File playerVaultFile = playerVaultManager.getPlayerVaultFile(player.getUniqueId());
+        UUID playerUUID = player.getUniqueId();
+        File playerVaultFile = playerVaultManager.getPlayerVaultFile(playerUUID);
         if (playerVaultFile == null) {
             // The player should never be able to get to this point unless something goes wrong
             player.sendMessage(Component.text("An unexpected error has occurred, please wait a moment then try again."));
             return;
         }
-        // Some stuff to store the shop name info
-        // TODO: Replace this with something better later. Maybe a confirm and cancel button like how the shops work?
-        ItemStack nameInfoHolder = new ItemStack(Material.WRITTEN_BOOK);
-        BookMeta bookMeta = (BookMeta) nameInfoHolder.getItemMeta();
-        bookMeta.setTitle(shopName + " Vault");
-        bookMeta.setAuthor("Server");
-        bookMeta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
-        nameInfoHolder.setItemMeta(bookMeta);
+        Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
+        ItemStack infoBook = new ItemStack(Material.KNOWLEDGE_BOOK);
+        ItemMeta meta = infoBook.getItemMeta();
+        if (meta != null) {
+            meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
+            // Set the lore text for the book
+            List<Component> lore = List.of(
+                    Component.text("Currently open shop vault " + shopName + "."),
+                    // TODO: Enforce this
+                    Component.text("Items you are buying are on the right."),
+                    Component.text("Items you are selling are on the left.")
+            );
+            meta.lore(lore);
+        }
+        infoBook.setItemMeta(meta);
+        // Divider line
+        for (int slot : DIVIDER_LINE_SLOTS) {
+            vaultInventory.setItem(slot, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+        }
+        vaultInventory.setItem(INFO_BOOK_SLOT, infoBook);
         // Continue with loading the rest of the vault
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
-        Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
         String shopVaultPath = "vault." + shopName;
-        // Check if the shopVaultPath exists in the config
         if (config.contains(shopVaultPath)) {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
             if (shopVaultSection != null) {
@@ -59,7 +72,6 @@ public class PlayerVaultGUI {
                 }
             }
         }
-        vaultInventory.setItem(26, nameInfoHolder);
         player.openInventory(vaultInventory);
     }
 }

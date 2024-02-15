@@ -11,11 +11,13 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
 public class PlayerVaultManager {
     private final File vaultsFolder;
+    private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
 
     public PlayerVaultManager(File pluginFolder) {
         this.vaultsFolder = new File(pluginFolder, "Vaults");
@@ -60,6 +62,11 @@ public class PlayerVaultManager {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
             if (shopVaultSection != null) {
                 for (String key : shopVaultSection.getKeys(false)) {
+                    // Determine the slot index from the key and skip GUI slots
+                    int slotIndex = Integer.parseInt(key.replace("slot_", ""));
+                    if (GUI_SLOTS.contains(slotIndex)) {
+                        continue;
+                    }
                     ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
                     // Check if the item is similar to the one we are looking for
                     if (item.isSimilar(itemToCheck)) {
@@ -81,17 +88,23 @@ public class PlayerVaultManager {
             boolean itemAdded = false;
             String shopVaultPath = "vault." + shopName;
             // Check existing slots within the specific shop's vault
-            for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
+            for (int i = 0; i < 54; i++) { // This is currently a hardcoded vault size limit
+                if (GUI_SLOTS.contains(i)) {
+                    // Skip GUI slots
+                    continue;
+                }
                 String slotKey = shopVaultPath + ".slot_" + i;
                 if (config.contains(slotKey)) {
                     ItemStack existingItem = ItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection(slotKey)).getValues(false));
                     if (existingItem.isSimilar(itemToAdd)) {
                         // Increase amount if similar item found
                         int newAmount = existingItem.getAmount() + amount;
-                        existingItem.setAmount(newAmount);
-                        config.set(slotKey, existingItem.serialize());
-                        itemAdded = true;
-                        break;
+                        if (newAmount <= existingItem.getMaxStackSize()) {
+                            existingItem.setAmount(newAmount);
+                            config.set(slotKey, existingItem.serialize());
+                            itemAdded = true;
+                            break;
+                        }
                     }
                 } else {
                     // Add item to a new empty slot
@@ -123,6 +136,12 @@ public class PlayerVaultManager {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
             if (shopVaultSection != null) {
                 for (String key : shopVaultSection.getKeys(false)) {
+                    // Determine the slot index from the key
+                    int slotIndex = Integer.parseInt(key.replace("slot_", ""));
+                    // Skip GUI slots
+                    if (GUI_SLOTS.contains(slotIndex)) {
+                        continue;
+                    }
                     if (remainingAmount <= 0) break; // Stop if the required amount has been removed
                     String fullKeyPath = shopVaultPath + "." + key;
                     ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
@@ -157,7 +176,11 @@ public class PlayerVaultManager {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
         String shopVaultPath = "vault." + shopName;
         // Check existing slots for a match or an empty slot
-        for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
+        for (int i = 0; i < 54; i++) { // This is currently a hardcoded vault size limit
+            if (GUI_SLOTS.contains(i)) {
+                // Skip the loop iteration if the slot is a GUI slot
+                continue;
+            }
             String slotKey = shopVaultPath + ".slot_" + i;
             if (config.contains(slotKey)) {
                 ItemStack existingItem = ItemStack.deserialize(Objects.requireNonNull(config.getConfigurationSection(slotKey)).getValues(false));
@@ -193,7 +216,11 @@ public class PlayerVaultManager {
         if (playerVaultFile == null) return;
         YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
         String shopVaultPath = "vault." + shopName;
-        for (int i = 0; i < 27; i++) { // This is currently a hardcoded vault size limit
+        for (int i = 0; i < 54; i++) { // This is currently a hardcoded vault size limit
+            if (GUI_SLOTS.contains(i)) {
+                // Skip the loop iteration if the slot is in the set
+                continue;
+            }
             ItemStack item = vaultInventory.getItem(i);
             if (item != null) {
                 config.set(shopVaultPath + ".slot_" + i, item.serialize());
