@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -40,7 +41,8 @@ public class OpenShopListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().title().equals(Component.text("Shop"))) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof Player && event.getView().title().equals(Component.text("Shop"))) {
             event.setCancelled(true);
             Player player = (Player) event.getWhoClicked();
             int clickedSlot = event.getRawSlot();
