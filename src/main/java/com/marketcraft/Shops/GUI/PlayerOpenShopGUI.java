@@ -93,7 +93,7 @@ public class PlayerOpenShopGUI {
         ownerIdentifier.setItemMeta(meta);
         // Fill the entire inventory with the background
         for (int i = 0; i < INVENTORY_SIZE; i++) {
-            shopInventory.setItem(i, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+            shopInventory.setItem(i, createNamedItem(Material.GRAY_STAINED_GLASS_PANE, "")); // Empty name
         }
         // Replacing certain slots with the menu items
         shopInventory.setItem(SELL_TAG_SLOT, itemBeingSoldTag);

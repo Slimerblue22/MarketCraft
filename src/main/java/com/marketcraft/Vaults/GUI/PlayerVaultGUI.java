@@ -26,6 +26,8 @@ import org.bukkit.persistence.PersistentDataType;
 import java.io.File;
 import java.util.*;
 
+import static com.marketcraft.Util.GUIUtils.createNamedItem;
+
 public class PlayerVaultGUI {
     private final PlayerVaultManager playerVaultManager;
     private final MarketCraft marketCraft;
@@ -63,7 +65,7 @@ public class PlayerVaultGUI {
         infoBook.setItemMeta(meta);
         // Divider line
         for (int slot : DIVIDER_LINE_SLOTS) {
-            vaultInventory.setItem(slot, new ItemStack(Material.GRAY_STAINED_GLASS_PANE));
+            vaultInventory.setItem(slot, createNamedItem(Material.GRAY_STAINED_GLASS_PANE, "")); // Empty name
         }
         vaultInventory.setItem(INFO_BOOK_SLOT, infoBook);
         // Continue with loading the rest of the vault
