@@ -10,6 +10,7 @@
 package com.marketcraft.Vaults.GUI;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
@@ -25,16 +26,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public class VaultInventoryListener implements Listener {
     private final PlayerVaultManager playerVaultManager;
+    private final PlayerShopManager playerShopManager;
     private final MarketCraft marketCraft;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
     private static final int INFO_BOOK_SLOT = 4;
 
-    public VaultInventoryListener(PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
+    public VaultInventoryListener(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
         this.playerVaultManager = playerVaultManager;
+        this.playerShopManager = playerShopManager;
         this.marketCraft = marketCraft;
     }
 
@@ -99,7 +103,39 @@ public class VaultInventoryListener implements Listener {
         if (infoBook != null && infoBook.hasItemMeta()) {
             ItemMeta meta = infoBook.getItemMeta();
             String shopName = meta.getPersistentDataContainer().get(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING);
+            // Return items that are not part of the shops stock to the player before continuing
+            returnInvalidItems(player, closedInventory, shopName);
             playerVaultManager.savePlayerVault(player, closedInventory, shopName);
+        }
+    }
+
+    private void returnInvalidItems(Player player, Inventory inventory, String shopName) {
+        ItemStack[] shopItems = playerShopManager.getPlayerShopItems(player.getUniqueId(), shopName);
+        // Iterate over the inventory slots
+        for (int i = 0; i < inventory.getSize(); i++) {
+            if (!GUI_SLOTS.contains(i)) {
+                ItemStack item = inventory.getItem(i);
+                // Check if the slot is not empty
+                if (item != null && item.getType() != Material.AIR) {
+                    // Check if the item is a shop item
+                    boolean isShopItem = false;
+                    for (ItemStack shopItem : shopItems) {
+                        if (shopItem != null && shopItem.isSimilar(item)) {
+                            isShopItem = true;
+                            break;
+                        }
+                    }
+                    // If the item is not a shop item, return it to the player
+                    if (!isShopItem) {
+                        HashMap<Integer, ItemStack> unfittedItems = player.getInventory().addItem(item.clone());
+                        if (!unfittedItems.isEmpty()) {
+                            // Drop items on the ground if the player's inventory is full
+                            unfittedItems.values().forEach(unfittedItem -> player.getWorld().dropItem(player.getLocation(), unfittedItem));
+                        }
+                        inventory.setItem(i, new ItemStack(Material.AIR));
+                    }
+                }
+            }
         }
     }
 }
