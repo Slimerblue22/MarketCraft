@@ -51,7 +51,6 @@ public class PlayerVaultGUI {
         Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
         ItemStack infoBook = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = infoBook.getItemMeta();
-        if (meta != null) {
             meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
             // Set the lore text for the book
             List<Component> lore = List.of(
@@ -61,7 +60,6 @@ public class PlayerVaultGUI {
                     Component.text("Items you are selling are on the left.")
             );
             meta.lore(lore);
-        }
         infoBook.setItemMeta(meta);
         // Divider line
         for (int slot : DIVIDER_LINE_SLOTS) {
@@ -73,15 +71,13 @@ public class PlayerVaultGUI {
         String shopVaultPath = "vault." + shopName;
         if (config.contains(shopVaultPath)) {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-            if (shopVaultSection != null) {
-                Set<String> keys = shopVaultSection.getKeys(false);
+                Set<String> keys = Objects.requireNonNull(shopVaultSection).getKeys(false);
                 for (String key : keys) {
                     Map<String, Object> itemData = Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false);
                     ItemStack item = ItemStack.deserialize(itemData);
                     int slot = Integer.parseInt(key.replace("slot_", ""));
                     vaultInventory.setItem(slot, item);
                 }
-            }
         }
         player.openInventory(vaultInventory);
     }
