@@ -69,8 +69,7 @@ public class PlayerVaultManager {
         // Check if the shopVaultPath exists in the config
         if (config.contains(shopVaultPath)) {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-            if (shopVaultSection != null) {
-                for (String key : shopVaultSection.getKeys(false)) {
+                for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
                     // Determine the slot index from the key and skip GUI slots
                     int slotIndex = Integer.parseInt(key.replace("slot_", ""));
                     if (GUI_SLOTS.contains(slotIndex)) {
@@ -83,7 +82,6 @@ public class PlayerVaultManager {
                     }
                 }
             }
-        }
         return itemCount;
     }
 
@@ -143,8 +141,7 @@ public class PlayerVaultManager {
             // Track the remaining amount to remove
             int remainingAmount = amountToRemove;
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-            if (shopVaultSection != null) {
-                for (String key : shopVaultSection.getKeys(false)) {
+                for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
                     // Determine the slot index from the key
                     int slotIndex = Integer.parseInt(key.replace("slot_", ""));
                     // Skip GUI slots
@@ -167,7 +164,6 @@ public class PlayerVaultManager {
                         }
                     }
                 }
-            }
             // Save changes if any items were removed
             if (remainingAmount < amountToRemove) {
                 config.save(playerVaultFile);
