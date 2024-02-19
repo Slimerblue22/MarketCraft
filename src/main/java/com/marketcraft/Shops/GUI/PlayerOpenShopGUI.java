@@ -82,8 +82,8 @@ public class PlayerOpenShopGUI {
         ItemStack confirmSelection = createNamedItem(Material.LIME_STAINED_GLASS_PANE, "Buy");
         ItemStack cancelSelection = createNamedItem(Material.RED_STAINED_GLASS_PANE, "Close shop");
         // Create the customized items
-        ItemStack itemBeingSold = shopItems[0] != null ? shopItems[0] : new ItemStack(Material.AIR);
-        ItemStack itemCost = shopItems[1] != null ? shopItems[1] : new ItemStack(Material.AIR);
+        ItemStack itemBeingSold = shopItems[0];
+        ItemStack itemCost = shopItems[1];
         int stockCount = playerVaultManager.getItemCountInPlayerVault(shopOwnerUUID, itemBeingSold, shopName);
         ItemStack stockIndicator = createNamedItem(Material.NAME_TAG, "Shop has " + stockCount + " in stock");
         ItemStack ownerIdentifier = createPlayerHead(shopOwnerUUID);
