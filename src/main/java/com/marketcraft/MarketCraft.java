@@ -9,11 +9,11 @@
 
 package com.marketcraft;
 
-import com.marketcraft.Shops.GUI.OpenShopListener;
-import com.marketcraft.Shops.GUI.ShopSetupListener;
+import com.marketcraft.Listeners.OpenShopListener;
+import com.marketcraft.Listeners.ShopSetupListener;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Util.DebugManager;
-import com.marketcraft.Vaults.GUI.VaultInventoryListener;
+import com.marketcraft.Listeners.VaultInventoryListener;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import org.bukkit.plugin.java.JavaPlugin;
 

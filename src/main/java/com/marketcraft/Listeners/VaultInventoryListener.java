@@ -7,7 +7,7 @@
  * Copyright (c) 2024 Slimerblue22
  */
 
-package com.marketcraft.Vaults.GUI;
+package com.marketcraft.Listeners;
 
 import com.marketcraft.MarketCraft;
 import com.marketcraft.Shops.PlayerShopManager;

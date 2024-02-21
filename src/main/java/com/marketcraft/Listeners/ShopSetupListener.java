@@ -7,7 +7,7 @@
  * Copyright (c) 2024 Slimerblue22
  */
 
-package com.marketcraft.Shops.GUI;
+package com.marketcraft.Listeners;
 
 import com.marketcraft.Shops.PlayerShopManager;
 import net.kyori.adventure.text.Component;
