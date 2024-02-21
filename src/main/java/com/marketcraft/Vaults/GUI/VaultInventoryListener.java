@@ -26,14 +26,31 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
+/**
+ * Handles inventory interactions within the player's vault in the MarketCraft plugin.
+ * This class is responsible for managing the functionality related to a player's vault inventory,
+ * including adding and removing items, and ensuring that only appropriate items are placed in specific slots.
+ * It also manages interactions with the inventory GUI, ensuring valid actions and preventing invalid ones.
+ * <p>
+ * The class contains methods for:
+ * - Handling clicks in the inventory, both in the player's own inventory and in the vault inventory.
+ * - Moving items into and out of the vault, considering both the type of item (selling or buying) and available space.
+ * - Returning invalid items to the player's inventory when the vault is closed.
+ * - Saving the contents of the vault upon closing.
+ * - Preventing certain global and menu-specific actions within the inventory to maintain consistency and prevent errors.
+ * <p>
+ * It utilizes sets of predefined slots for selling and buying items to maintain order in the vault inventory.
+ * The class works closely with the PlayerVaultManager and PlayerShopManager to handle vault-specific and shop-specific data.
+ */
 public class VaultInventoryListener implements Listener {
     private final PlayerVaultManager playerVaultManager;
     private final PlayerShopManager playerShopManager;
     private final MarketCraft marketCraft;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
+    private static final Set<Integer> SELLING_SLOTS = Set.of(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
+    private static final Set<Integer> BUYING_SLOTS = Set.of(5, 6, 7, 8, 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43, 44, 50, 51, 52, 53);
     private static final int INFO_BOOK_SLOT = 4;
 
     public VaultInventoryListener(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
@@ -42,44 +59,127 @@ public class VaultInventoryListener implements Listener {
         this.marketCraft = marketCraft;
     }
 
+    private String getShopNameFromItem(Inventory inventory) {
+        ItemStack item = inventory.getItem(VaultInventoryListener.INFO_BOOK_SLOT);
+        if (item != null && item.hasItemMeta()) {
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                return meta.getPersistentDataContainer().get(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING);
+            }
+        }
+        return null; // Return null if the item doesn't exist or doesn't have the metadata
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        boolean isVaultGUI = event.getInventory().getHolder() instanceof Player &&
-                event.getView().title().equals(Component.text("Your Vault"));
-        // Prevent double-click stacking in the entire "Your Vault" GUI (both top and bottom)
-        if (isVaultGUI) {
-            preventDoubleClickStacking(event);
-            preventShiftClickingInvalidItems(event);
+        // Check if the player is in the menu in general, doesn't matter if it's their inventory or the vault
+        boolean isVaultGUI = event.getInventory().getHolder() instanceof Player
+                && event.getView().title().equals(Component.text("Your Vault"));
+        // Check if the player is specifically interacting with the vault
+        boolean isTopInventory = Objects.equals(event.getClickedInventory(),
+                player.getOpenInventory().getTopInventory());
+        // Check if the player is specifically interacting with their own inventory
+        boolean isBottomInventory = Objects.equals(event.getClickedInventory(),
+                player.getOpenInventory().getBottomInventory());
+        // If not in the Vault GUI, no need to proceed further
+        if (!isVaultGUI) {
+            return;
         }
-        // Handle menu clicks only if the click is in the top inventory, and it is the vault
-        if (isVaultGUI &&
-                event.getClickedInventory() != null &&
-                event.getClickedInventory().equals(player.getOpenInventory().getTopInventory())) {
-            handleMenuClicks(event);
+        preventInvalidGlobalActions(event);
+        if (event.isCancelled()) {
+            return;
+        }
+        if (isTopInventory) {
+            preventInvalidMenuSpecificActions(event);
+            if (event.isCancelled()) {
+                return;
+            }
+            moveItemOutOfVault(event);
+        } else if (isBottomInventory) {
+            String shopName = getShopNameFromItem(player.getOpenInventory().getTopInventory());
+            moveItemIntoVault(event, shopName);
         }
     }
 
-    private void preventDoubleClickStacking(InventoryClickEvent event) {
-        event.getWhoClicked();
-        // Check if the action is a double click
-        if (event.getClick() == ClickType.DOUBLE_CLICK) {
-            // Cancel the event to prevent double-click stacking
-            event.setCancelled(true);
+    private void moveItemOutOfVault(InventoryClickEvent event) {
+        event.setCancelled(true);
+        ItemStack clickedItem = event.getCurrentItem();
+        Player player = (Player) event.getWhoClicked();
+        Inventory playerInventory = player.getInventory();
+        if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+            return; // No item was clicked or the slot is empty
+        }
+        ItemStack copyOfClickedItem = clickedItem.clone();
+        HashMap<Integer, ItemStack> remainingItems = playerInventory.addItem(copyOfClickedItem);
+        if (!remainingItems.isEmpty()) {
+            // Not all items could be added, adjust the item amount in the vault
+            ItemStack remaining = remainingItems.values().iterator().next();
+            clickedItem.setAmount(remaining.getAmount());
+        } else {
+            // All items were added, remove from the vault
+            event.setCurrentItem(new ItemStack(Material.AIR));
         }
     }
 
-    private void preventShiftClickingInvalidItems(InventoryClickEvent event) {
-        if (event.getClick() == ClickType.SHIFT_LEFT || event.getClick() == ClickType.SHIFT_RIGHT) {
-            ItemStack clickedItem = event.getCurrentItem();
-            // Prevents people from losing certain items if they shift click them into the GUI and they stack into an existing menu slot
-            if (clickedItem != null && clickedItem.getType() == Material.GRAY_STAINED_GLASS_PANE) {
-                event.setCancelled(true);
+    private void moveItemIntoVault(InventoryClickEvent event, String shopName) {
+        event.setCancelled(true);
+        Player player = (Player) event.getWhoClicked();
+        ItemStack clickedItem = event.getCurrentItem();
+        Inventory vaultInventory = event.getInventory();
+        ItemStack[] shopItems = playerShopManager.getPlayerShopItems(player.getUniqueId(), shopName);
+        if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+            return; // No item was clicked or the slot is empty
+        }
+        // Determine if the clicked item is a selling or buying item
+        ItemStack sellingItem = shopItems[0];
+        ItemStack buyingItem = shopItems[1];
+        boolean isSellingItem = sellingItem != null && sellingItem.isSimilar(clickedItem);
+        boolean isBuyingItem = buyingItem != null && buyingItem.isSimilar(clickedItem);
+        Set<Integer> appropriateSlots = isSellingItem ? SELLING_SLOTS : (isBuyingItem ? BUYING_SLOTS : Collections.emptySet());
+        if (appropriateSlots.isEmpty()) {
+            player.sendMessage(Component.text("This item cannot be placed in the vault."));
+            return;
+        }
+        ItemStack copyOfClickedItem = clickedItem.clone();
+        int amountToAdd = copyOfClickedItem.getAmount();
+        for (int slot : appropriateSlots) {
+            ItemStack itemInSlot = vaultInventory.getItem(slot);
+            if (itemInSlot != null && itemInSlot.isSimilar(copyOfClickedItem) && itemInSlot.getAmount() < itemInSlot.getMaxStackSize()) {
+                int amountCanAdd = itemInSlot.getMaxStackSize() - itemInSlot.getAmount();
+                int amountWillAdd = Math.min(amountToAdd, amountCanAdd);
+                itemInSlot.setAmount(itemInSlot.getAmount() + amountWillAdd);
+                amountToAdd -= amountWillAdd;
+                if (amountToAdd == 0) {
+                    event.setCurrentItem(new ItemStack(Material.AIR));
+                    return; // All items have been added
+                }
+            }
+        }
+        if (amountToAdd > 0) {
+            Optional<Integer> emptySlotIndex = appropriateSlots.stream()
+                    .filter(slot -> vaultInventory.getItem(slot) == null || Objects.requireNonNull(vaultInventory.getItem(slot)).getType() == Material.AIR)
+                    .findFirst();
+            if (emptySlotIndex.isPresent()) {
+                copyOfClickedItem.setAmount(amountToAdd);
+                vaultInventory.setItem(emptySlotIndex.get(), copyOfClickedItem);
+                event.setCurrentItem(new ItemStack(Material.AIR));
+            } else {
+                player.sendMessage(Component.text("There is no available space in the vault for this item."));
+                clickedItem.setAmount(amountToAdd); // Adjust the amount on the original item to reflect what couldn't be added
             }
         }
     }
 
-    private void handleMenuClicks(InventoryClickEvent event) {
+    private void preventInvalidGlobalActions(InventoryClickEvent event) {
+        if (event.getClick() == ClickType.SHIFT_LEFT
+                || event.getClick() == ClickType.SHIFT_RIGHT
+                || event.getClick() == ClickType.DOUBLE_CLICK) {
+            event.setCancelled(true);
+        }
+    }
+
+    private void preventInvalidMenuSpecificActions(InventoryClickEvent event) {
         // These slots are menu items and should not be interacted with
         if (GUI_SLOTS.contains(event.getSlot())) {
             event.setCancelled(true);
@@ -99,14 +199,13 @@ public class VaultInventoryListener implements Listener {
     }
 
     private void saveVaultContents(Inventory closedInventory, Player player) {
-        ItemStack infoBook = closedInventory.getItem(INFO_BOOK_SLOT);
-        if (infoBook != null && infoBook.hasItemMeta()) {
-            ItemMeta meta = infoBook.getItemMeta();
-            String shopName = meta.getPersistentDataContainer().get(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING);
-            // Return items that are not part of the shops stock to the player before continuing
-            returnInvalidItems(player, closedInventory, shopName);
-            playerVaultManager.savePlayerVault(player, closedInventory, shopName);
-        }
+        String shopName = getShopNameFromItem(closedInventory);
+        // Return items that are not part of the shops stock to the player before continuing
+        // This should never occur since the player is normally prevented from putting such items
+        // into the GUI, but it remains here as a fail-safe
+        returnInvalidItems(player, closedInventory, shopName);
+        // Save the vault inventory
+        playerVaultManager.savePlayerVault(player, closedInventory, shopName);
     }
 
     private void returnInvalidItems(Player player, Inventory inventory, String shopName) {

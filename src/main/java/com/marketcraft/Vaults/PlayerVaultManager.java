@@ -27,6 +27,7 @@ import java.util.logging.Level;
 public class PlayerVaultManager {
     private final File vaultsFolder;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
+    private static final Set<Integer> SELLING_SLOTS = Set.of(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
 
     public PlayerVaultManager(File pluginFolder) {
         this.vaultsFolder = new File(pluginFolder, "Vaults");
@@ -85,6 +86,7 @@ public class PlayerVaultManager {
         return itemCount;
     }
 
+    // Consider renaming this since it's only used to add payment items
     public void addItemsToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -96,7 +98,10 @@ public class PlayerVaultManager {
             String shopVaultPath = "vault." + shopName;
             // Check existing slots within the specific shop's vault
             for (int i = 0; i < 54; i++) { // This is currently a hardcoded vault size limit
-                if (GUI_SLOTS.contains(i)) {
+                // We ignore the menu slots since they are menu items
+                // We ignore the selling slots since this method is only ever used to add payment items
+                // from a successful sell, those items should be put into the payment slots instead
+                if (GUI_SLOTS.contains(i) || (SELLING_SLOTS.contains(i))) {
                     // Skip GUI slots
                     continue;
                 }
@@ -173,6 +178,7 @@ public class PlayerVaultManager {
         }
     }
 
+    // Consider renaming this since it's only used to add payment items
     public boolean canAddItemToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -182,8 +188,11 @@ public class PlayerVaultManager {
         String shopVaultPath = "vault." + shopName;
         // Check existing slots for a match or an empty slot
         for (int i = 0; i < 54; i++) { // This is currently a hardcoded vault size limit
-            if (GUI_SLOTS.contains(i)) {
-                // Skip the loop iteration if the slot is a GUI slot
+            // We ignore the menu slots since they are menu items
+            // We ignore the selling slots since this method is only ever used to add payment items
+            // from a successful sell, those items should be put into the payment slots instead
+            if (GUI_SLOTS.contains(i) || (SELLING_SLOTS.contains(i))) {
+                // Skip GUI slots
                 continue;
             }
             String slotKey = shopVaultPath + ".slot_" + i;
