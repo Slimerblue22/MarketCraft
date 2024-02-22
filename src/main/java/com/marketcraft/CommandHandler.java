@@ -10,6 +10,7 @@
 package com.marketcraft;
 
 import com.marketcraft.Commands.*;
+import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
 import com.marketcraft.Shops.PlayerShopManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -56,7 +57,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final OpenShopCommand openShopCommand;
     private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops", "openshop"};
 
-    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
+    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
@@ -65,7 +66,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.createShopCommand = new CreateShopCommand();
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
-        this.openShopCommand = new OpenShopCommand(playerShopManager, playerVaultManager, marketCraft);
+        this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);
     }
 
     /**

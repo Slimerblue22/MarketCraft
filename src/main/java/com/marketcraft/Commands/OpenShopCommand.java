@@ -9,10 +9,7 @@
 
 package com.marketcraft.Commands;
 
-import com.marketcraft.MarketCraft;
 import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
-import com.marketcraft.Shops.PlayerShopManager;
-import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -34,8 +31,8 @@ import java.util.UUID;
 public class OpenShopCommand {
     private final PlayerOpenShopGUI playerOpenShopGUI;
 
-    public OpenShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
-        this.playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, marketCraft);
+    public OpenShopCommand(PlayerOpenShopGUI playerOpenShopGUI) {
+        this.playerOpenShopGUI = playerOpenShopGUI;
     }
 
     public boolean handleOpenShopCommand(CommandSender sender, String[] args) {
