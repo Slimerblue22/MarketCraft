@@ -97,8 +97,7 @@ public class PlayerShopManager {
         }
     }
 
-    public boolean doesPlayerShopExist(Player player, String shopName) {
-        UUID playerUUID = player.getUniqueId();
+    public boolean doesPlayerShopExist(UUID playerUUID, String shopName) {
         String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
         if (!playerShopFile.exists()) {

@@ -17,6 +17,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.UUID;
+
 /**
  * Handles the 'openvault' subcommand of the /marketcraft command set.
  * This class is responsible for opening a player's vault, creating a new vault if one doesn't exist.
@@ -45,8 +47,9 @@ public class OpenVaultCommand {
             return false;
         }
         String shopName = args[1];
-        if (playerShopManager.doesPlayerShopExist(player, shopName)) {
-            if (playerVaultManager.doesPlayerVaultExist(player.getUniqueId())) {
+        UUID playerUUID = player.getUniqueId();
+        if (playerShopManager.doesPlayerShopExist(playerUUID, shopName)) {
+            if (playerVaultManager.doesPlayerVaultExist(playerUUID)) {
                 sender.sendMessage(Component.text("Opening your existing vault for shop: " + shopName));
                 playerVaultGUI.openVault(player, shopName);
             } else {
