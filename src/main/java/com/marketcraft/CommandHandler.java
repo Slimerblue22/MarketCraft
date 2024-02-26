@@ -12,6 +12,7 @@ package com.marketcraft;
 import com.marketcraft.Commands.*;
 import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
 import com.marketcraft.Shops.PlayerShopManager;
+import com.marketcraft.Signs.SignsManager;
 import com.marketcraft.Vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -55,9 +56,10 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final RemoveShopCommand removeShopCommand;
     private final ListShopsCommand listShopsCommand;
     private final OpenShopCommand openShopCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops", "openshop"};
+    private final CreateSignCommand createSignCommand;
+    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops", "openshop", "createsign"};
 
-    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI) {
+    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI, SignsManager signsManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
@@ -67,6 +69,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
         this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);
+        this.createSignCommand = new CreateSignCommand(playerShopManager, signsManager);
     }
 
     /**
@@ -98,6 +101,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender, args);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender, args);
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
+            case "createsign" -> createSignCommand.handleCreateSignCommand(sender, args);
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs marketcraft.admin
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
