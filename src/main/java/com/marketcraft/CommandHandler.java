@@ -9,11 +9,11 @@
 
 package com.marketcraft;
 
-import com.marketcraft.Commands.*;
-import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
-import com.marketcraft.Shops.PlayerShopManager;
-import com.marketcraft.Signs.SignsManager;
-import com.marketcraft.Vaults.PlayerVaultManager;
+import com.marketcraft.commands.*;
+import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.shops.PlayerShopManager;
+import com.marketcraft.signs.SignsManager;
+import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -9,15 +9,15 @@
 
 package com.marketcraft;
 
-import com.marketcraft.Listeners.OpenShopListener;
-import com.marketcraft.Listeners.ShopSetupListener;
-import com.marketcraft.Listeners.SignListener;
-import com.marketcraft.Shops.GUI.PlayerOpenShopGUI;
-import com.marketcraft.Shops.PlayerShopManager;
-import com.marketcraft.Signs.SignsManager;
-import com.marketcraft.Util.DebugManager;
-import com.marketcraft.Listeners.VaultInventoryListener;
-import com.marketcraft.Vaults.PlayerVaultManager;
+import com.marketcraft.listeners.OpenShopListener;
+import com.marketcraft.listeners.ShopSetupListener;
+import com.marketcraft.listeners.SignListener;
+import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.shops.PlayerShopManager;
+import com.marketcraft.signs.SignsManager;
+import com.marketcraft.util.DebugManager;
+import com.marketcraft.listeners.VaultInventoryListener;
+import com.marketcraft.vaults.PlayerVaultManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
