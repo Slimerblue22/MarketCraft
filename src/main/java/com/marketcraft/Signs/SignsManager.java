@@ -50,6 +50,34 @@ public class SignsManager {
         }
     }
 
+    public void removeSignLink(Block signBlock, Player player) {
+        UUID playerUUID = player.getUniqueId();
+        Optional<Map<String, String>> signDataOptional = getSignData(signBlock);
+        if (signDataOptional.isPresent()) {
+            Map<String, String> signData = signDataOptional.get();
+            UUID ownerUUID = UUID.fromString(signData.get("owner"));
+            // Check if the player is the owner or has the admin permission
+            if (playerUUID.equals(ownerUUID) || player.hasPermission("marketcraft.admin")) {
+                Location signLocation = signBlock.getLocation();
+                File signsFile = new File(signsFolder, "signs.yml");
+                YamlConfiguration config = YamlConfiguration.loadConfiguration(signsFile);
+                String locationKey = getLocationKey(signLocation);
+                config.set(locationKey, null); // Remove the sign link
+                try {
+                    config.save(signsFile);
+                    player.sendMessage(Component.text("Sign link successfully removed."));
+                } catch (IOException e) {
+                    Bukkit.getLogger().log(Level.WARNING, "An error occurred while removing sign data: ", e);
+                    player.sendMessage(Component.text("An error occurred while removing sign data. Please try again later."));
+                }
+            } else {
+                player.sendMessage(Component.text("You do not have permission to remove this sign link."));
+            }
+        } else {
+            player.sendMessage(Component.text("No sign link found at this location."));
+        }
+    }
+
     private String getLocationKey(Location location) {
         return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
     }

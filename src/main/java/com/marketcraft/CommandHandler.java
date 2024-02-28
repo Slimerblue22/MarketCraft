@@ -57,7 +57,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final ListShopsCommand listShopsCommand;
     private final OpenShopCommand openShopCommand;
     private final CreateSignCommand createSignCommand;
-    private static final String[] COMMANDS = {"help", "version", "openvault", "removevault", "listvaults", "createshop", "removeshop", "listshops", "openshop", "createsign"};
+    private final RemoveSignCommand removeSignCommand;
+    private static final String[] COMMANDS = {"createshop", "createsign", "help", "listshops", "listvaults", "openshop", "openvault", "removeshop", "removesign", "removevault", "version"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI, SignsManager signsManager) {
         this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
@@ -70,6 +71,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
         this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);
         this.createSignCommand = new CreateSignCommand(playerShopManager, signsManager);
+        this.removeSignCommand = new RemoveSignCommand(signsManager);
     }
 
     /**
@@ -102,6 +104,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender, args);
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
             case "createsign" -> createSignCommand.handleCreateSignCommand(sender, args);
+            case "removesign" -> removeSignCommand.handleRemoveSignCommand(sender, args);
             case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs marketcraft.admin
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
