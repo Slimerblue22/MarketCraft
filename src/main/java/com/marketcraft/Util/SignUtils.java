@@ -26,7 +26,7 @@ public class SignUtils {
         if (block.getState() instanceof Sign sign) {
             Component firstLine = (sign.getSide(Side.FRONT).line(0));
             String firstLineText = PlainTextComponentSerializer.plainText().serialize(firstLine);
-            return firstLineText.contains("Marketcraft") && sign.isWaxed();
+            return "Marketcraft".equals(firstLineText.trim()) && sign.isWaxed();
         }
         return false;
     }
