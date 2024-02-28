@@ -7,7 +7,7 @@
  * Copyright (c) 2024 Slimerblue22
  */
 
-package com.marketcraft.vaults.gui;
+package com.marketcraft.gui;
 
 import com.marketcraft.MarketCraft;
 import com.marketcraft.vaults.PlayerVaultManager;
@@ -51,15 +51,14 @@ public class PlayerVaultGUI {
         Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
         ItemStack infoBook = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = infoBook.getItemMeta();
-            meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
-            // Set the lore text for the book
-            List<Component> lore = List.of(
-                    Component.text("Currently open shop vault " + shopName + "."),
-                    // TODO: Enforce this
-                    Component.text("Items you are buying are on the right."),
-                    Component.text("Items you are selling are on the left.")
-            );
-            meta.lore(lore);
+        meta.getPersistentDataContainer().set(new NamespacedKey(marketCraft, "shopName"), PersistentDataType.STRING, shopName);
+        // Set the lore text for the book
+        List<Component> lore = List.of(
+                Component.text("Currently open shop vault " + shopName + "."),
+                Component.text("Items you are buying are on the right."),
+                Component.text("Items you are selling are on the left.")
+        );
+        meta.lore(lore);
         infoBook.setItemMeta(meta);
         // Divider line
         for (int slot : DIVIDER_LINE_SLOTS) {
@@ -71,13 +70,13 @@ public class PlayerVaultGUI {
         String shopVaultPath = "vault." + shopName;
         if (config.contains(shopVaultPath)) {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-                Set<String> keys = Objects.requireNonNull(shopVaultSection).getKeys(false);
-                for (String key : keys) {
-                    Map<String, Object> itemData = Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false);
-                    ItemStack item = ItemStack.deserialize(itemData);
-                    int slot = Integer.parseInt(key.replace("slot_", ""));
-                    vaultInventory.setItem(slot, item);
-                }
+            Set<String> keys = Objects.requireNonNull(shopVaultSection).getKeys(false);
+            for (String key : keys) {
+                Map<String, Object> itemData = Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false);
+                ItemStack item = ItemStack.deserialize(itemData);
+                int slot = Integer.parseInt(key.replace("slot_", ""));
+                vaultInventory.setItem(slot, item);
+            }
         }
         player.openInventory(vaultInventory);
     }

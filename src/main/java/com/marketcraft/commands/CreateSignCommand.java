@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.marketcraft.util.SignUtils.isValidMarketcraftSign;
 import static com.marketcraft.util.SignUtils.isSign;
+import static com.marketcraft.util.SignUtils.isValidMarketcraftSign;
 
 public class CreateSignCommand {
     private final PlayerShopManager playerShopManager;

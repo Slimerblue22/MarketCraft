@@ -7,7 +7,7 @@
  * Copyright (c) 2024 Slimerblue22
  */
 
-package com.marketcraft.shops.gui;
+package com.marketcraft.gui;
 
 import com.marketcraft.MarketCraft;
 import com.marketcraft.shops.PlayerShopManager;

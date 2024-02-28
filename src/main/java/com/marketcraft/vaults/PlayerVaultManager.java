@@ -70,19 +70,19 @@ public class PlayerVaultManager {
         // Check if the shopVaultPath exists in the config
         if (config.contains(shopVaultPath)) {
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-                for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
-                    // Determine the slot index from the key and skip GUI slots
-                    int slotIndex = Integer.parseInt(key.replace("slot_", ""));
-                    if (GUI_SLOTS.contains(slotIndex)) {
-                        continue;
-                    }
-                    ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
-                    // Check if the item is similar to the one we are looking for
-                    if (item.isSimilar(itemToCheck)) {
-                        itemCount += item.getAmount();
-                    }
+            for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
+                // Determine the slot index from the key and skip GUI slots
+                int slotIndex = Integer.parseInt(key.replace("slot_", ""));
+                if (GUI_SLOTS.contains(slotIndex)) {
+                    continue;
+                }
+                ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
+                // Check if the item is similar to the one we are looking for
+                if (item.isSimilar(itemToCheck)) {
+                    itemCount += item.getAmount();
                 }
             }
+        }
         return itemCount;
     }
 
@@ -146,29 +146,29 @@ public class PlayerVaultManager {
             // Track the remaining amount to remove
             int remainingAmount = amountToRemove;
             ConfigurationSection shopVaultSection = config.getConfigurationSection(shopVaultPath);
-                for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
-                    // Determine the slot index from the key
-                    int slotIndex = Integer.parseInt(key.replace("slot_", ""));
-                    // Skip GUI slots
-                    if (GUI_SLOTS.contains(slotIndex)) {
-                        continue;
-                    }
-                    if (remainingAmount <= 0) break; // Stop if the required amount has been removed
-                    String fullKeyPath = shopVaultPath + "." + key;
-                    ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
-                    if (item.isSimilar(itemToRemove)) {
-                        int currentAmount = item.getAmount();
-                        if (currentAmount > remainingAmount) {
-                            item.setAmount(currentAmount - remainingAmount);
-                            config.set(fullKeyPath, item.serialize());
-                            remainingAmount = 0;
-                        } else {
-                            // Remove the entire stack and decrement the remaining amount
-                            remainingAmount -= currentAmount;
-                            config.set(fullKeyPath, null); // Remove the item stack from the slot
-                        }
+            for (String key : Objects.requireNonNull(shopVaultSection).getKeys(false)) {
+                // Determine the slot index from the key
+                int slotIndex = Integer.parseInt(key.replace("slot_", ""));
+                // Skip GUI slots
+                if (GUI_SLOTS.contains(slotIndex)) {
+                    continue;
+                }
+                if (remainingAmount <= 0) break; // Stop if the required amount has been removed
+                String fullKeyPath = shopVaultPath + "." + key;
+                ItemStack item = ItemStack.deserialize(Objects.requireNonNull(shopVaultSection.getConfigurationSection(key)).getValues(false));
+                if (item.isSimilar(itemToRemove)) {
+                    int currentAmount = item.getAmount();
+                    if (currentAmount > remainingAmount) {
+                        item.setAmount(currentAmount - remainingAmount);
+                        config.set(fullKeyPath, item.serialize());
+                        remainingAmount = 0;
+                    } else {
+                        // Remove the entire stack and decrement the remaining amount
+                        remainingAmount -= currentAmount;
+                        config.set(fullKeyPath, null); // Remove the item stack from the slot
                     }
                 }
+            }
             // Save changes if any items were removed
             if (remainingAmount < amountToRemove) {
                 config.save(playerVaultFile);

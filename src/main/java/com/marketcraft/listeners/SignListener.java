@@ -9,7 +9,7 @@
 
 package com.marketcraft.listeners;
 
-import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.gui.PlayerOpenShopGUI;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.signs.SignsManager;
 import net.kyori.adventure.text.Component;

@@ -9,14 +9,14 @@
 
 package com.marketcraft;
 
+import com.marketcraft.gui.PlayerOpenShopGUI;
 import com.marketcraft.listeners.OpenShopListener;
 import com.marketcraft.listeners.ShopSetupListener;
 import com.marketcraft.listeners.SignListener;
-import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.listeners.VaultInventoryListener;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.signs.SignsManager;
 import com.marketcraft.util.DebugManager;
-import com.marketcraft.listeners.VaultInventoryListener;
 import com.marketcraft.vaults.PlayerVaultManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -28,6 +28,7 @@ public final class MarketCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        //noinspection deprecation
         pluginVersion = this.getDescription().getVersion();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
         PlayerShopManager playerShopManager = new PlayerShopManager(getDataFolder());

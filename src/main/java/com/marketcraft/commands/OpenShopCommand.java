@@ -9,7 +9,7 @@
 
 package com.marketcraft.commands;
 
-import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.gui.PlayerOpenShopGUI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

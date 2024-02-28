@@ -10,7 +10,7 @@
 package com.marketcraft;
 
 import com.marketcraft.commands.*;
-import com.marketcraft.shops.gui.PlayerOpenShopGUI;
+import com.marketcraft.gui.PlayerOpenShopGUI;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.signs.SignsManager;
 import com.marketcraft.vaults.PlayerVaultManager;

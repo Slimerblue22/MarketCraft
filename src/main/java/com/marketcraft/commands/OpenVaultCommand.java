@@ -10,8 +10,8 @@
 package com.marketcraft.commands;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.gui.PlayerVaultGUI;
 import com.marketcraft.shops.PlayerShopManager;
-import com.marketcraft.vaults.gui.PlayerVaultGUI;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;

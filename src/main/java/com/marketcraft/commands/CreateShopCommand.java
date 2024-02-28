@@ -9,7 +9,7 @@
 
 package com.marketcraft.commands;
 
-import com.marketcraft.shops.gui.PlayerShopSetupGUI;
+import com.marketcraft.gui.PlayerShopSetupGUI;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
