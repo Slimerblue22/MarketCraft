@@ -323,17 +323,33 @@ public class PlayerVaultManager {
     }
 
     /**
-     * Removes a player's vault file.
+     * Removes a specific vault for a player from the YAML configuration file.
+     * This method deletes only the specified vault associated with the player's UUID,
+     * rather than removing the entire file.
      *
      * @param uuidString The UUID of the player as a string.
-     * @return True if the file was successfully deleted, false otherwise.
+     * @param vaultName  The name of the vault to be removed.
+     * @return True if the vault was successfully removed, false otherwise. Reasons for failure
+     * might include the non-existence of the vault file, the absence of the specified vault,
+     * or an error occurring during the file update.
      */
-    public boolean removePlayerVaultFile(String uuidString) {
+    public boolean removePlayerVault(String uuidString, String vaultName) {
         UUID playerUUID = UUID.fromString(uuidString);
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
-        if (doesPlayerVaultExist(playerUUID)) {
-            return playerVaultFile.delete();
-        } else {
+        if (!playerVaultFile.exists()) {
+            return false;
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+        String basePath = "vault." + vaultName;
+        if (!config.contains(basePath)) {
+            return false;
+        }
+        config.set(basePath, null);
+        try {
+            config.save(playerVaultFile);
+            return true;
+        } catch (IOException e) {
+            Bukkit.getLogger().log(Level.WARNING, "An error has occurred while deleting a player's vault: ", e);
             return false;
         }
     }
