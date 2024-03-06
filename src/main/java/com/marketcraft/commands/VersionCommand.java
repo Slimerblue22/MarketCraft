@@ -15,11 +15,22 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.CommandSender;
 
 /**
- * Handles the 'version' subcommand of the /marketcraft command set.
- * This class is responsible for displaying the current version of the MarketCraft plugin,
- * along with additional information such as the author and a link to the GitHub repository.
+ * Command handler for the 'version' subcommand within the MarketCraft plugin.
+ * Provides version information and plugin details.
  */
 public class VersionCommand {
+
+    /**
+     * Handles the 'version' subcommand of the /marketcraft command set.
+     * This method is responsible for displaying the current version of the MarketCraft plugin,
+     * along with additional information such as the author and a link to the GitHub repository.
+     * It provides an interactive text component where users can click to visit the GitHub page directly
+     * from the chat interface. The command is designed to inform users about the plugin's version and
+     * other relevant details for reference and support purposes.
+     *
+     * @param sender The sender of the command, can be a player or the console.
+     * @return true after successfully displaying the version information.
+     */
     public boolean handleVersionCommand(CommandSender sender) {
         String version = MarketCraft.getPluginVersion();
         // Create a component for the version

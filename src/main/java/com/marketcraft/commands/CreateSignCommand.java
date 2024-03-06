@@ -25,6 +25,10 @@ import java.util.UUID;
 import static com.marketcraft.util.SignUtils.isSign;
 import static com.marketcraft.util.SignUtils.isValidMarketcraftSign;
 
+/**
+ * Command handler for the 'createsign' subcommand within the MarketCraft plugin.
+ * Utilizes PlayerShopManager and SignsManager for sign creation and management.
+ */
 public class CreateSignCommand {
     private final PlayerShopManager playerShopManager;
     private final SignsManager signsManager;
@@ -34,6 +38,18 @@ public class CreateSignCommand {
         this.signsManager = signsManager;
     }
 
+    /**
+     * Handles the 'createsign' subcommand of the /marketcraft command set.
+     * This method allows players to link a sign to their existing shop, facilitating shop interactions
+     * through the sign. The method checks if the player is looking at a sign and validates whether
+     * the sign can be linked to a shop (e.g., not already linked, formatted correctly, and waxed).
+     * It ensures that the player owns the shop they are attempting to link and provides feedback
+     * accordingly.
+     *
+     * @param sender The sender of the command, should be a player.
+     * @param args   The arguments provided with the command, expected to contain the shop name.
+     * @return true if the command is successfully handled and the sign is linked to the shop, false otherwise.
+     */
     public boolean handleCreateSignCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));

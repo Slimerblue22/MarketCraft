@@ -14,10 +14,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
 /**
- * Handles the 'removeshop' subcommand of the /marketcraft command set.
- * This class allows administrators with the appropriate permissions to remove a player's shop
- * based on the player's UUID. The command ensures that only authorized users can perform this
- * action and validates the provided UUID before attempting to remove the associated shop.
+ * Command handler for the `removeshop` subcommand within the MarketCraft plugin.
+ * Utilizes PlayerShopManager for shop removal operations.
  */
 public class RemoveShopCommand {
     private final PlayerShopManager playerShopManager;
@@ -26,6 +24,19 @@ public class RemoveShopCommand {
         this.playerShopManager = playerShopManager;
     }
 
+    /**
+     * Handles the 'removeshop' subcommand of the /marketcraft command set.
+     * This method allows administrators with the appropriate permissions to remove a player's shop
+     * based on the player's UUID and the shop's name. The command ensures that only authorized users
+     * can perform this action and validates the provided UUID and shop name before attempting to
+     * remove the associated shop. It provides feedback to the administrator about the outcome of
+     * the action, whether successful or not.
+     *
+     * @param sender The sender of the command, expected to be an administrator with the required permission.
+     * @param args   The arguments provided with the command, including the player's UUID and the shop's name.
+     * @return true if the shop is successfully removed, false if there is an error such as lack of permission,
+     * incorrect usage, invalid UUID format, or if the shop does not exist.
+     */
     public boolean handleRemoveShopCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("marketcraft.admin")) {
             sender.sendMessage(Component.text("You don't have permission to run this command."));

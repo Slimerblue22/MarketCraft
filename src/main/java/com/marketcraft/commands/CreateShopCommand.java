@@ -15,12 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Handles the 'createshop' subcommand of the /marketcraft command set.
- * This class is responsible for initiating the shop creation process for players.
- * When executed by a player, it opens the shop configuration GUI, allowing the player
- * to set up their shop with custom items for sale and items required for purchase.
- * The command is designed to be player-specific, ensuring that each player can create
- * and manage their own unique shop.
+ * Command handler for the 'createshop' subcommand within the MarketCraft plugin.
+ * Utilizes PlayerShopSetupGUI for shop setup interactions.
  */
 public class CreateShopCommand {
     private final PlayerShopSetupGUI playerShopSetupGUI;
@@ -29,6 +25,18 @@ public class CreateShopCommand {
         this.playerShopSetupGUI = new PlayerShopSetupGUI();
     }
 
+    /**
+     * Handles the 'createshop' subcommand of the /marketcraft command set.
+     * This method is responsible for initiating the shop creation process for players.
+     * When executed by a player, it opens the shop configuration GUI, allowing the player
+     * to set up their shop with custom items for sale and items required for purchase.
+     * The command is designed to be player-specific, ensuring that each player can create
+     * and manage their own unique shop.
+     *
+     * @param sender The sender of the command, should be a player.
+     * @param args   The arguments provided with the command, expected to contain the shop name.
+     * @return true if the command is successfully handled, false otherwise.
+     */
     public boolean handleCreateShopCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));

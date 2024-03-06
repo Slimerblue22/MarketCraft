@@ -28,11 +28,13 @@ import static com.marketcraft.util.GUIUtils.createNamedItem;
 import static com.marketcraft.util.GUIUtils.createPlayerHead;
 
 /**
- * Handles the graphical user interface for opening and interacting with a player's shop.
- * This class manages the creation and display of the shop inventory, allowing players to view and interact with
- * items for sale, including their costs and available stock.
- *
- * @see com.marketcraft.util.GUIUtils
+ * Manages the graphical user interface (GUI) for players to open and interact with shops in the MarketCraft plugin.
+ * This class is responsible for creating and displaying the shop inventory interface, enabling players to view items for sale, understand their costs, and check available stock.
+ * <p>
+ * Utilizes PlayerShopManager to retrieve information about items in a specific player's shop, including details such as item types and prices.
+ * Employs PlayerVaultManager to manage and display the stock availability of items in the shop.
+ * Leverages GUIUtils for creating custom inventory items and layouts in the GUI.
+ * Interacts with MarketCraft for plugin-specific context and information.
  */
 public class PlayerOpenShopGUI {
     private static final int INVENTORY_SIZE = 27;
@@ -48,13 +50,6 @@ public class PlayerOpenShopGUI {
     private final PlayerVaultManager playerVaultManager;
     private final MarketCraft marketCraft;
 
-    /**
-     * Constructs an instance of PlayerOpenShopGUI with the given shop and vault managers.
-     *
-     * @param playerShopManager  The manager responsible for handling player shop data.
-     * @param playerVaultManager The manager responsible for handling player vault data.
-     * @param marketCraft        The main plugin class.
-     */
     public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;

@@ -19,14 +19,8 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 
 /**
- * Handles the 'openshop' subcommand of the /marketcraft command set.
- * This class is responsible for opening a specified player's shop interface for the command executor.
- * It leverages the PlayerOpenShopGUI for the graphical representation of the shop and utilizes
- * PlayerShopManager and PlayerVaultManager for managing the shop's inventory and stock.
- * The command is designed for player use and requires the player's name and the shop's name as arguments.
- * It validates the existence of the specified shop and the player's identity before opening the shop GUI.
- * This ensures a seamless and intuitive shopping experience within the game, promoting player interaction
- * and commerce within the server's economy.
+ * Command handler for the 'openshop' subcommand within the MarketCraft plugin.
+ * Utilizes PlayerOpenShopGUI for opening player shop interfaces.
  */
 public class OpenShopCommand {
     private final PlayerOpenShopGUI playerOpenShopGUI;
@@ -35,6 +29,20 @@ public class OpenShopCommand {
         this.playerOpenShopGUI = playerOpenShopGUI;
     }
 
+    /**
+     * Handles the 'openshop' subcommand of the /marketcraft command set.
+     * This method is responsible for opening a specified player's shop interface for the command executor.
+     * It leverages the PlayerOpenShopGUI for the graphical representation of the shop. The command is designed
+     * for player use and requires the player's name and the shop's name as arguments. It validates the existence
+     * of the specified shop and the player's identity before opening the shop GUI. This ensures a seamless and
+     * intuitive shopping experience within the game, promoting player interaction and commerce within the
+     * server's economy.
+     *
+     * @param sender The sender of the command, expected to be a player.
+     * @param args   The arguments provided with the command, including the target player's name and the shop's name.
+     * @return true if the shop GUI is successfully opened for the player, false if there is an error such as the command
+     * not being used by a player, incorrect usage, or invalid player or shop name.
+     */
     public boolean handleOpenShopCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));

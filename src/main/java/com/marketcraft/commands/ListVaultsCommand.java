@@ -16,11 +16,8 @@ import org.bukkit.command.CommandSender;
 import java.io.File;
 
 /**
- * Handles the 'listvaults' subcommand of the /marketcraft command set.
- * This class allows administrators with the appropriate permissions to list all player vaults.
- * It supports pagination to display the vaults in a manageable format, showing a set number
- * of entries per page. The command ensures that only authorized users can view the list of vaults,
- * and it provides functionality to navigate through the vaults in a paginated manner.
+ * Command handler for the 'listvaults' subcommand within the MarketCraft plugin.
+ * Utilizes PlayerVaultManager for listing player vaults.
  */
 public class ListVaultsCommand {
     private final PlayerVaultManager playerVaultManager;
@@ -30,6 +27,19 @@ public class ListVaultsCommand {
         this.playerVaultManager = playerVaultManager;
     }
 
+    /**
+     * Handles the 'listvaults' subcommand of the /marketcraft command set.
+     * This method allows administrators with the appropriate permissions to list all player vaults.
+     * It supports pagination to display the vaults in a manageable format, showing a set number
+     * of entries per page. The method ensures that only authorized users can view the list of vaults
+     * and provides functionality to navigate through the vaults in a paginated manner. This method also
+     * handles input validation for the page number, ensuring it's a positive integer and within the range
+     * of available pages.
+     *
+     * @param sender The sender of the command, expected to be an administrator with the required permission.
+     * @param args   The arguments provided with the command, optionally including the page number to view.
+     * @return true if the command is successfully executed, false if there is an error or unauthorized access.
+     */
     public boolean handleListVaultsCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("marketcraft.admin")) {
             sender.sendMessage(Component.text("You don't have permission to run this command."));

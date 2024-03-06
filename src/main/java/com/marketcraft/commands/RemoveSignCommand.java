@@ -19,14 +19,29 @@ import org.bukkit.util.BlockIterator;
 
 import static com.marketcraft.util.SignUtils.isSign;
 
+/**
+ * Command handler for the 'removesign' subcommand within the MarketCraft plugin.
+ * Utilizes SignsManager for managing sign links to shops.
+ */
 public class RemoveSignCommand {
-
     private final SignsManager signsManager;
 
     public RemoveSignCommand(SignsManager signsManager) {
         this.signsManager = signsManager;
     }
 
+    /**
+     * Handles the 'removesign' subcommand of the /marketcraft command set.
+     * This method allows players to unlink a sign from any associated shop. It determines the sign
+     * the player is currently looking at and checks if it's a valid sign. If so, the method proceeds
+     * to remove any links between the sign and a shop. This action ensures that signs can be repurposed
+     * or removed from the game without retaining any previous shop associations.
+     *
+     * @param sender The sender of the command, expected to be a player.
+     * @param args   The arguments provided with the command. No additional arguments are expected for this command.
+     * @return true if the sign is successfully unlinked from a shop, false if there is an error such as
+     * the command not being used by a player, incorrect usage, or if the player is not looking at a sign.
+     */
     public boolean handleRemoveSignCommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("This command can only be used by players."));

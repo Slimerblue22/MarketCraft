@@ -14,10 +14,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
 /**
- * Handles the 'removevault' subcommand of the /marketcraft command set.
- * This class allows administrators with the appropriate permissions to remove a player's vault
- * based on the player's UUID. The command ensures that only authorized users can perform this
- * action and validates the provided UUID before attempting to remove the associated vault.
+ * Command handler for the 'removevault' subcommand within the MarketCraft plugin.
+ * Utilizes PlayerVaultManager for vault removal operations.
  */
 public class RemoveVaultCommand {
     private final PlayerVaultManager playerVaultManager;
@@ -26,6 +24,18 @@ public class RemoveVaultCommand {
         this.playerVaultManager = playerVaultManager;
     }
 
+    /**
+     * Handles the 'removevault' subcommand of the /marketcraft command set.
+     * This method allows administrators with the appropriate permissions to remove a player's vault
+     * based on the player's UUID. The command ensures that only authorized users can perform this
+     * action and validates the provided UUID before attempting to remove the associated vault.
+     * It provides feedback to the administrator about the outcome of the action, whether successful or not.
+     *
+     * @param sender The sender of the command, expected to be an administrator with the required permission.
+     * @param args   The arguments provided with the command, including the player's UUID.
+     * @return true if the vault is successfully removed, false if there is an error such as lack of permission,
+     * incorrect usage, invalid UUID format, or if the vault does not exist.
+     */
     public boolean handleRemoveVaultCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission("marketcraft.admin")) {
             sender.sendMessage(Component.text("You don't have permission to run this command."));

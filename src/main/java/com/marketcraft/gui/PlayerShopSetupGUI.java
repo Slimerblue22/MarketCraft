@@ -22,8 +22,7 @@ import static com.marketcraft.util.GUIUtils.createNamedItem;
  * Handles the graphical user interface for setting up a player's shop in the game.
  * This class is responsible for creating and managing the inventory interface
  * where players can configure the items they wish to sell and the price for each item.
- *
- * @see com.marketcraft.util.GUIUtils
+ * Leverages GUIUtils for creating custom inventory items and layouts in the GUI.
  */
 public class PlayerShopSetupGUI {
     private static final int INVENTORY_SIZE = 27;

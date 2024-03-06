@@ -27,6 +27,13 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * Listener class for handling inventory interactions within the MarketCraft plugin's shop interface.
+ * This class is responsible for processing player interactions with the shop GUI, such as purchase confirmations and cancellations.
+ * <p>
+ * Utilizes ShopTransaction to handle the logic of processing a shop transaction, including item transfers and stock management.
+ * Interacts with MarketCraft for plugin-specific context and to access necessary data keys for transaction processing.
+ */
 public class OpenShopListener implements Listener {
     private final ShopTransaction shopTransaction;
     private final MarketCraft marketCraft;
@@ -39,6 +46,15 @@ public class OpenShopListener implements Listener {
         this.marketCraft = marketCraft;
     }
 
+    /**
+     * Handles click events within the shop inventory interface.
+     * This method is triggered when a player interacts with the shop GUI. It checks for specific interactions,
+     * such as confirming a purchase or closing the shop, and processes these actions accordingly.
+     * It retrieves the shop owner's UUID and shop name from the inventory metadata to facilitate the transaction
+     * process when a purchase is confirmed.
+     *
+     * @param event The inventory click event that contains details about the player's interaction with the shop inventory.
+     */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         InventoryHolder holder = event.getInventory().getHolder();

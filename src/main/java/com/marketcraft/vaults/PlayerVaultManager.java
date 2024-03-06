@@ -24,6 +24,17 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * Manages the vaults of players in the MarketCraft plugin.
+ * This class handles the storage, retrieval, and modification of player vaults, which are used to manage shop inventory.
+ * It ensures the persistence of vault contents, provides functionalities for item transactions, and manages vault file operations.
+ * <p>
+ * Key functionalities include:
+ * - Creating and removing player vault files.
+ * - Saving and loading vault contents.
+ * - Managing items within vaults including adding, removing, and checking item counts.
+ * - Listing all vault files for administrative purposes.
+ */
 public class PlayerVaultManager {
     private final File vaultsFolder;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
@@ -36,11 +47,23 @@ public class PlayerVaultManager {
         }
     }
 
+    /**
+     * Checks if a player's vault file exists.
+     *
+     * @param playerUUID The UUID of the player.
+     * @return True if the vault file exists, false otherwise.
+     */
     public boolean doesPlayerVaultExist(UUID playerUUID) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         return playerVaultFile.exists();
     }
 
+    /**
+     * Creates a file for a player's vault associated with a specific shop.
+     *
+     * @param player   The player for whom the vault is being created.
+     * @param shopName The name of the shop associated with the vault.
+     */
     public void createPlayerVaultFile(Player player, String shopName) {
         UUID playerUUID = player.getUniqueId();
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
@@ -59,6 +82,14 @@ public class PlayerVaultManager {
         }
     }
 
+    /**
+     * Counts the number of a specific item in a player's vault for a given shop.
+     *
+     * @param playerUUID  The UUID of the player owning the vault.
+     * @param itemToCheck The item to count in the vault.
+     * @param shopName    The name of the shop associated with the vault.
+     * @return The count of the specified item in the vault.
+     */
     public int getItemCountInPlayerVault(UUID playerUUID, ItemStack itemToCheck, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -86,7 +117,14 @@ public class PlayerVaultManager {
         return itemCount;
     }
 
-    // Consider renaming this since it's only used to add payment items
+    /**
+     * Adds a specified amount of an item to a player's vault for a given shop.
+     *
+     * @param playerUUID The UUID of the player owning the vault.
+     * @param itemToAdd  The item to be added to the vault.
+     * @param amount     The amount of the item to add.
+     * @param shopName   The name of the shop associated with the vault.
+     */
     public void addItemsToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -135,6 +173,14 @@ public class PlayerVaultManager {
         }
     }
 
+    /**
+     * Removes a specified amount of an item from a player's vault for a given shop.
+     *
+     * @param playerUUID     The UUID of the player owning the vault.
+     * @param itemToRemove   The item to be removed from the vault.
+     * @param amountToRemove The amount of the item to remove.
+     * @param shopName       The name of the shop associated with the vault.
+     */
     public void removeItemsFromPlayerVault(UUID playerUUID, ItemStack itemToRemove, int amountToRemove, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -178,7 +224,15 @@ public class PlayerVaultManager {
         }
     }
 
-    // Consider renaming this since it's only used to add payment items
+    /**
+     * Checks if a specific item can be added to a player's vault, considering available space.
+     *
+     * @param playerUUID The UUID of the player owning the vault.
+     * @param itemToAdd  The item to be added to the vault.
+     * @param amount     The amount of the item to add.
+     * @param shopName   The name of the shop associated with the vault.
+     * @return True if the item can be added, false otherwise.
+     */
     public boolean canAddItemToPlayerVault(UUID playerUUID, ItemStack itemToAdd, int amount, String shopName) {
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
         if (!playerVaultFile.exists()) {
@@ -214,6 +268,12 @@ public class PlayerVaultManager {
         return false;
     }
 
+    /**
+     * Retrieves the file corresponding to a player's vault.
+     *
+     * @param playerUUID The UUID of the player.
+     * @return The file of the player's vault, or null if it doesn't exist.
+     */
     public File getPlayerVaultFile(UUID playerUUID) {
         if (doesPlayerVaultExist(playerUUID)) {
             return new File(vaultsFolder, playerUUID + ".yml");
@@ -221,10 +281,22 @@ public class PlayerVaultManager {
         return null;
     }
 
+    /**
+     * Lists all existing player vault files.
+     *
+     * @return An array of files representing the player vaults.
+     */
     public File[] listAllVaults() {
         return vaultsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
     }
 
+    /**
+     * Saves the contents of a player's vault to a file.
+     *
+     * @param player         The player whose vault is being saved.
+     * @param vaultInventory The inventory of the vault.
+     * @param shopName       The name of the shop associated with the vault.
+     */
     public void savePlayerVault(Player player, Inventory vaultInventory, String shopName) {
         File playerVaultFile = getPlayerVaultFile(player.getUniqueId());
         if (playerVaultFile == null) return;
@@ -250,6 +322,12 @@ public class PlayerVaultManager {
         }
     }
 
+    /**
+     * Removes a player's vault file.
+     *
+     * @param uuidString The UUID of the player as a string.
+     * @return True if the file was successfully deleted, false otherwise.
+     */
     public boolean removePlayerVaultFile(String uuidString) {
         UUID playerUUID = UUID.fromString(uuidString);
         File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");

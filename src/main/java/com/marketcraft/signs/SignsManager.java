@@ -24,6 +24,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * Manages the linking of signs to player shops in the MarketCraft plugin.
+ * This class provides functionalities to create and remove links between signs and shops,
+ * allowing players to interact with shops through physical signs in the game world.
+ * <p>
+ * It handles the storage and retrieval of sign-related data, ensuring persistence across server sessions,
+ * and provides methods for creating, removing, and getting data for sign-shop links.
+ */
 public class SignsManager {
     private final File signsFolder;
 
@@ -34,6 +42,14 @@ public class SignsManager {
         }
     }
 
+    /**
+     * Creates a link between a sign and a player's shop.
+     * Stores the sign's location and the associated shop's details in a configuration file.
+     *
+     * @param player    The player creating the sign link.
+     * @param shopName  The name of the shop to link.
+     * @param signBlock The block representing the sign.
+     */
     public void createSignLink(Player player, String shopName, Block signBlock) {
         UUID playerUUID = player.getUniqueId();
         Location signLocation = signBlock.getLocation();
@@ -50,6 +66,14 @@ public class SignsManager {
         }
     }
 
+    /**
+     * Removes a link between a sign and a shop.
+     * Validates the player's ownership or admin permission before unlinking.
+     * Updates the configuration file to reflect the removal of the link.
+     *
+     * @param signBlock The block representing the sign.
+     * @param player    The player attempting to remove the sign link.
+     */
     public void removeSignLink(Block signBlock, Player player) {
         UUID playerUUID = player.getUniqueId();
         Optional<Map<String, String>> signDataOptional = getSignData(signBlock);
@@ -82,6 +106,12 @@ public class SignsManager {
         return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
     }
 
+    /**
+     * Retrieves the data associated with a sign, including owner and linked shop information.
+     *
+     * @param signBlock The block representing the sign.
+     * @return An Optional containing the sign's data if present, otherwise an empty Optional.
+     */
     public Optional<Map<String, String>> getSignData(Block signBlock) {
         Location signLocation = signBlock.getLocation();
         File signsFile = new File(signsFolder, "signs.yml");

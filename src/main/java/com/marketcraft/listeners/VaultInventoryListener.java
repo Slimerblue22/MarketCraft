@@ -59,6 +59,13 @@ public class VaultInventoryListener implements Listener {
         this.marketCraft = marketCraft;
     }
 
+    /**
+     * Retrieves the shop name from an item in the inventory.
+     * This method is used to get the shop's name based on metadata stored in a specific item within the inventory.
+     *
+     * @param inventory The inventory containing the item with the shop name metadata.
+     * @return The name of the shop, or null if the shop name cannot be retrieved.
+     */
     private String getShopNameFromItem(Inventory inventory) {
         ItemStack item = inventory.getItem(VaultInventoryListener.INFO_BOOK_SLOT);
         if (item != null && item.hasItemMeta()) {
@@ -70,6 +77,13 @@ public class VaultInventoryListener implements Listener {
         return null; // Return null if the item doesn't exist or doesn't have the metadata
     }
 
+    /**
+     * Handles player clicks within the vault inventory interface.
+     * This method manages the logic for adding or removing items from the vault,
+     * as well as cancelling invalid actions to maintain the integrity of the vault's contents.
+     *
+     * @param event The inventory click event containing details about the player's interaction.
+     */
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
@@ -102,6 +116,12 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles moving an item out of the vault and into the player's inventory.
+     * If the player's inventory is full, the item amount in the vault is adjusted accordingly.
+     *
+     * @param event The inventory click event representing the player's interaction.
+     */
     private void moveItemOutOfVault(InventoryClickEvent event) {
         event.setCancelled(true);
         ItemStack clickedItem = event.getCurrentItem();
@@ -122,6 +142,14 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles adding an item into the vault from the player's inventory.
+     * Ensures that only appropriate items are added based on whether they are selling or buying items for the shop.
+     * Notifies the player if there is no space in the vault for the item.
+     *
+     * @param event    The inventory click event representing the player's interaction.
+     * @param shopName The name of the shop associated with the vault.
+     */
     private void moveItemIntoVault(InventoryClickEvent event, String shopName) {
         event.setCancelled(true);
         Player player = (Player) event.getWhoClicked();
@@ -171,6 +199,12 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Cancels invalid global actions within the vault inventory, such as shift-clicking or double-clicking,
+     * to maintain the inventory's integrity.
+     *
+     * @param event The inventory click event to be checked for invalid actions.
+     */
     private void preventInvalidGlobalActions(InventoryClickEvent event) {
         if (event.getClick() == ClickType.SHIFT_LEFT
                 || event.getClick() == ClickType.SHIFT_RIGHT
@@ -179,6 +213,12 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Cancels interactions with specific GUI slots that are not meant for item storage or manipulation.
+     * This is to prevent the player from accidentally interacting with important menu elements.
+     *
+     * @param event The inventory click event to be checked for invalid menu-specific actions.
+     */
     private void preventInvalidMenuSpecificActions(InventoryClickEvent event) {
         // These slots are menu items and should not be interacted with
         if (GUI_SLOTS.contains(event.getSlot())) {
@@ -186,6 +226,13 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Handles the closing of the vault inventory.
+     * This method is responsible for saving the contents of the vault upon closure and returning any invalid items
+     * to the player's inventory. It ensures the persistence of vault contents and the correct handling of items.
+     *
+     * @param event The inventory close event triggered when a player closes their vault inventory.
+     */
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
@@ -198,16 +245,29 @@ public class VaultInventoryListener implements Listener {
         }
     }
 
+    /**
+     * Saves the contents of the vault when the inventory is closed.
+     * This method first removes any invalid items that are not part of the shop's stock,
+     * then saves the remaining valid contents of the vault.
+     *
+     * @param closedInventory The inventory that is being closed.
+     * @param player          The player who owns the vault.
+     */
     private void saveVaultContents(Inventory closedInventory, Player player) {
         String shopName = getShopNameFromItem(closedInventory);
-        // Return items that are not part of the shops stock to the player before continuing
-        // This should never occur since the player is normally prevented from putting such items
-        // into the GUI, but it remains here as a fail-safe
         returnInvalidItems(player, closedInventory, shopName);
-        // Save the vault inventory
         playerVaultManager.savePlayerVault(player, closedInventory, shopName);
     }
 
+    /**
+     * Returns items to the player's inventory if they are not valid for the shop.
+     * This method checks each item in the inventory and returns it to the player if it's not part of the shop's stock.
+     * If the player's inventory is full, the item is dropped near the player.
+     *
+     * @param player    The player to return items to.
+     * @param inventory The inventory containing items to be checked.
+     * @param shopName  The name of the shop associated with the inventory.
+     */
     private void returnInvalidItems(Player player, Inventory inventory, String shopName) {
         ItemStack[] shopItems = playerShopManager.getPlayerShopItems(player.getUniqueId(), shopName);
         // Iterate over the inventory slots

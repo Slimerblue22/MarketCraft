@@ -21,6 +21,21 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Level;
 
+/**
+ * Manages player shops in the MarketCraft plugin.
+ * This class is responsible for handling the creation, deletion, and management of player shops.
+ * It interacts with the plugin's file system to store and retrieve shop data, ensuring persistence across server sessions.
+ * <p>
+ * Key functionalities include:
+ * - Saving shop configurations set by players.
+ * - Retrieving items associated with a specific shop.
+ * - Listing all existing shop files for administrative purposes.
+ * - Deleting shops based on player UUID and shop name.
+ * - Checking the existence of a player's shop.
+ * <p>
+ * The shop data is stored as YAML configurations, with each player having a unique file based on their UUID.
+ * The class provides a streamlined interface for other components of the plugin to interact with shop data.
+ */
 public class PlayerShopManager {
     private final File shopsFolder;
 
@@ -31,6 +46,15 @@ public class PlayerShopManager {
         }
     }
 
+    /**
+     * Saves the configuration of a player's shop to a YAML file.
+     * This includes serializing the items to sell and charge in the shop.
+     *
+     * @param player       The player who owns the shop.
+     * @param shopName     The name of the shop.
+     * @param itemToSell   The item to be sold in the shop.
+     * @param itemToCharge The item to be charged in the shop.
+     */
     public void savePlayerShop(Player player, String shopName, ItemStack itemToSell, ItemStack itemToCharge) {
         UUID playerUUID = player.getUniqueId();
         String basePath = "shops." + shopName;
@@ -46,6 +70,15 @@ public class PlayerShopManager {
             player.sendMessage(Component.text("An error occurred while saving your shop. Please try again later."));
         }
     }
+
+    /**
+     * Retrieves items associated with a player's shop from the shop's YAML configuration file.
+     * Returns an array of ItemStacks containing the item to sell and the item to charge.
+     *
+     * @param playerUUID The UUID of the player who owns the shop.
+     * @param shopName   The name of the shop.
+     * @return An array of ItemStacks containing the selling and charging items, or null if the shop or items do not exist.
+     */
 
     public ItemStack[] getPlayerShopItems(UUID playerUUID, String shopName) {
         String basePath = "shops." + shopName;
@@ -74,6 +107,14 @@ public class PlayerShopManager {
         return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
     }
 
+    /**
+     * Deletes a player's shop configuration from the YAML file.
+     * Returns a boolean indicating the success of the deletion process.
+     *
+     * @param uuidString The string representation of the player's UUID.
+     * @param shopName   The name of the shop to be deleted.
+     * @return True if the shop was successfully deleted, false otherwise.
+     */
     public boolean deletePlayerShop(String uuidString, String shopName) {
         String basePath = "shops." + shopName;
         UUID playerUUID = UUID.fromString(uuidString);
@@ -97,6 +138,13 @@ public class PlayerShopManager {
         }
     }
 
+    /**
+     * Checks if a player's shop exists in the YAML configuration file.
+     *
+     * @param playerUUID The UUID of the player.
+     * @param shopName   The name of the shop.
+     * @return True if the shop exists, false otherwise.
+     */
     public boolean doesPlayerShopExist(UUID playerUUID, String shopName) {
         String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");

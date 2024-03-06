@@ -28,6 +28,12 @@ import java.util.*;
 
 import static com.marketcraft.util.GUIUtils.createNamedItem;
 
+/**
+ * Manages the graphical user interface (GUI) for player vaults in the MarketCraft plugin.
+ * This class is responsible for the creation, display, and interaction of the vault inventory
+ * for players, which is a key component of the plugin's shop system. It utilizes the PlayerVaultManager
+ * to interact with the underlying data and the MarketCraft plugin instance for additional context.
+ */
 public class PlayerVaultGUI {
     private final PlayerVaultManager playerVaultManager;
     private final MarketCraft marketCraft;
@@ -40,6 +46,17 @@ public class PlayerVaultGUI {
         this.marketCraft = marketCraft;
     }
 
+    /**
+     * Opens a vault GUI for a specific player and shop.
+     * This method creates and displays the inventory interface representing the player's vault
+     * for a particular shop. The vault includes items the player is buying or selling. The method
+     * ensures that the vault is personalized for the player and the specified shop, and it loads
+     * the current state of the vault from the stored data. If the vault file does not exist or
+     * an error occurs, the player is notified with an appropriate message.
+     *
+     * @param player   The player for whom the vault is being opened.
+     * @param shopName The name of the shop associated with the vault to be opened.
+     */
     public void openVault(Player player, String shopName) {
         UUID playerUUID = player.getUniqueId();
         File playerVaultFile = playerVaultManager.getPlayerVaultFile(playerUUID);
