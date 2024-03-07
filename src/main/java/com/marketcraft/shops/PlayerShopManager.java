@@ -9,8 +9,10 @@
 
 package com.marketcraft.shops;
 
+import com.marketcraft.MarketCraft;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -136,6 +138,31 @@ public class PlayerShopManager {
             Bukkit.getLogger().log(Level.WARNING, "An error has occurred while deleting a player's shop: ", e);
             return false;
         }
+    }
+
+    /**
+     * Checks whether a player has reached their shop creation limit.
+     * This method examines the player's shop file to determine the number of shops they currently own,
+     * comparing this count to the maximum number of shops allowed per player, as specified in the plugin's configuration.
+     * It returns true if the player is below their shop limit, thereby allowing the creation of additional shops.
+     *
+     * @param player The player whose shop count is being checked.
+     * @return true if the player is below their shop limit, false otherwise.
+     */
+    public boolean isAtShopLimit(Player player) {
+        UUID playerUUID = player.getUniqueId();
+        File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
+        if (!playerShopFile.exists()) {
+            return true; // No shops file means the player is below the limit.
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerShopFile);
+        ConfigurationSection shopsSection = config.getConfigurationSection("shops");
+        if (shopsSection == null) {
+            return true; // No "shops" section means the player is below the limit.
+        }
+        int shopCount = shopsSection.getKeys(false).size();
+        int shopLimit = MarketCraft.getShopLimit();
+        return shopCount < shopLimit;
     }
 
     /**

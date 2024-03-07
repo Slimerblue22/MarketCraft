@@ -66,7 +66,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager, playerShopManager, marketCraft);
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
-        this.createShopCommand = new CreateShopCommand();
+        this.createShopCommand = new CreateShopCommand(playerShopManager);
         this.removeShopCommand = new RemoveShopCommand(playerShopManager);
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
         this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);

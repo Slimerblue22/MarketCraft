@@ -9,6 +9,7 @@
 
 package com.marketcraft.signs;
 
+import com.marketcraft.MarketCraft;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,10 +19,7 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -104,6 +102,31 @@ public class SignsManager {
 
     private String getLocationKey(Location location) {
         return location.getWorld().getName() + "," + location.getBlockX() + "," + location.getBlockY() + "," + location.getBlockZ();
+    }
+
+    /**
+     * Checks whether a player has reached their limit for creating signs.
+     * This method counts the number of signs currently owned by the player and compares it
+     * against the maximum number of signs a player is allowed, as defined in the plugin's configuration.
+     * It returns true if the player has not yet reached their sign limit, allowing them to create more signs.
+     *
+     * @param player The player whose sign count is being checked.
+     * @return true if the player has not reached their sign limit, false otherwise.
+     */
+    public boolean isAtSignLimit(Player player) {
+        UUID playerUUID = player.getUniqueId();
+        File signsFile = new File(signsFolder, "signs.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(signsFile);
+        int count = 0;
+        // Count the number of signs that belong to the player
+        for (String key : config.getKeys(false)) {
+            if (Objects.equals(config.getString(key + ".owner"), playerUUID.toString())) {
+                count++;
+            }
+        }
+        // Get the sign limit from the config
+        int signLimit = MarketCraft.getSignLimit();
+        return count < signLimit;
     }
 
     /**

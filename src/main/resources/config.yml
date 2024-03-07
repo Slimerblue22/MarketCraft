@@ -1,0 +1,9 @@
+# Configuration for MarketCraft
+
+# Default limit for the number of shops a player can have
+# Default value: 5
+shopLimit: 5
+
+# Default limit for the number of shop signs a player can have
+# Default value: 5
+signLimit: 5

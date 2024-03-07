@@ -30,6 +30,8 @@ import java.util.Objects;
  */
 public final class MarketCraft extends JavaPlugin {
     private static String pluginVersion;
+    private static int shopLimit;
+    private static int signLimit;
 
     /**
      * Initializes the plugin when it is enabled.
@@ -38,6 +40,9 @@ public final class MarketCraft extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        saveDefaultConfig();
+        shopLimit = getConfig().getInt("shopLimit", 5);
+        signLimit = getConfig().getInt("signLimit", 5);
         //noinspection deprecation
         pluginVersion = this.getDescription().getVersion();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
@@ -64,5 +69,13 @@ public final class MarketCraft extends JavaPlugin {
 
     public static String getPluginVersion() {
         return pluginVersion;
+    }
+
+    public static int getShopLimit() {
+        return shopLimit;
+    }
+
+    public static int getSignLimit() {
+        return signLimit;
     }
 }
