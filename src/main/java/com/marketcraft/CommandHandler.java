@@ -105,8 +105,8 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
             case "createsign" -> createSignCommand.handleCreateSignCommand(sender, args);
             case "removesign" -> removeSignCommand.handleRemoveSignCommand(sender, args);
-            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args); // Needs marketcraft.admin
-            case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args); // Needs marketcraft.admin
+            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args);
+            case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args);
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
             case "listshops" -> listShopsCommand.handleListShopsCommand(sender, args); // Needs marketcraft.admin
             default -> {
