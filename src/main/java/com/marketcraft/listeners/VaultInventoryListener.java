@@ -49,8 +49,8 @@ public class VaultInventoryListener implements Listener {
     private final PlayerShopManager playerShopManager;
     private final MarketCraft marketCraft;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
-    private static final Set<Integer> SELLING_SLOTS = Set.of(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48);
-    private static final Set<Integer> BUYING_SLOTS = Set.of(5, 6, 7, 8, 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43, 44, 50, 51, 52, 53);
+    private static final Set<Integer> SELLING_SLOTS = new LinkedHashSet<>(Arrays.asList(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48));
+    private static final Set<Integer> BUYING_SLOTS = new LinkedHashSet<>(Arrays.asList(5, 6, 7, 8, 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43, 44, 50, 51, 52, 53));
     private static final int INFO_BOOK_SLOT = 4;
 
     public VaultInventoryListener(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
