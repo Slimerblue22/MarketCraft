@@ -10,6 +10,7 @@
 package com.marketcraft.listeners;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.locks.ShopLockManager;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -43,19 +44,22 @@ import java.util.*;
  * <p>
  * It utilizes sets of predefined slots for selling and buying items to maintain order in the vault inventory.
  * The class works closely with the PlayerVaultManager and PlayerShopManager to handle vault-specific and shop-specific data.
+ * The class also utilizes ShopLockManager to handle unlocking the shop.
  */
 public class VaultInventoryListener implements Listener {
     private final PlayerVaultManager playerVaultManager;
     private final PlayerShopManager playerShopManager;
+    private final ShopLockManager shopLockManager;
     private final MarketCraft marketCraft;
     private static final Set<Integer> GUI_SLOTS = Set.of(4, 13, 22, 31, 40, 49);
     private static final Set<Integer> SELLING_SLOTS = new LinkedHashSet<>(Arrays.asList(0, 1, 2, 3, 9, 10, 11, 12, 18, 19, 20, 21, 27, 28, 29, 30, 36, 37, 38, 39, 45, 46, 47, 48));
     private static final Set<Integer> BUYING_SLOTS = new LinkedHashSet<>(Arrays.asList(5, 6, 7, 8, 14, 15, 16, 17, 23, 24, 25, 26, 32, 33, 34, 35, 41, 42, 43, 44, 50, 51, 52, 53));
     private static final int INFO_BOOK_SLOT = 4;
 
-    public VaultInventoryListener(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft) {
+    public VaultInventoryListener(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, ShopLockManager shopLockManager, MarketCraft marketCraft) {
         this.playerVaultManager = playerVaultManager;
         this.playerShopManager = playerShopManager;
+        this.shopLockManager = shopLockManager;
         this.marketCraft = marketCraft;
     }
 
@@ -242,6 +246,10 @@ public class VaultInventoryListener implements Listener {
                 closedInventory.equals(player.getOpenInventory().getTopInventory()) &&
                 Component.text("Your Vault").equals(player.getOpenInventory().title())) {
             saveVaultContents(closedInventory, player);
+            // Unlock the shop after the vault is closed
+            String shopName = getShopNameFromItem(closedInventory);
+            UUID playerUUID = player.getUniqueId();
+            shopLockManager.unlockShop(playerUUID, shopName, playerUUID);
         }
     }
 

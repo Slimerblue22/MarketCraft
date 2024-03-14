@@ -14,7 +14,9 @@ import com.marketcraft.listeners.OpenShopListener;
 import com.marketcraft.listeners.ShopSetupListener;
 import com.marketcraft.listeners.SignListener;
 import com.marketcraft.listeners.VaultInventoryListener;
+import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
+import com.marketcraft.locks.ShopLockManager;
 import com.marketcraft.signs.SignsManager;
 import com.marketcraft.util.DebugManager;
 import com.marketcraft.vaults.PlayerVaultManager;
@@ -45,16 +47,18 @@ public final class MarketCraft extends JavaPlugin {
         signLimit = getConfig().getInt("signLimit", 5);
         //noinspection deprecation
         pluginVersion = this.getDescription().getVersion();
+        ShopLockManager shopLockManager = new ShopLockManager();
+        VaultLockManager vaultLockManager = new VaultLockManager();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
         PlayerShopManager playerShopManager = new PlayerShopManager(getDataFolder());
         SignsManager signsManager = new SignsManager(getDataFolder());
-        PlayerOpenShopGUI playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, this);
-        getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager, playerShopManager, this), this);
+        PlayerOpenShopGUI playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, shopLockManager, vaultLockManager, this);
+        getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager, playerShopManager, shopLockManager, this), this);
         getServer().getPluginManager().registerEvents(new ShopSetupListener(playerShopManager), this);
-        getServer().getPluginManager().registerEvents(new OpenShopListener(playerVaultManager, this), this);
+        getServer().getPluginManager().registerEvents(new OpenShopListener(playerVaultManager, vaultLockManager, this), this);
         getServer().getPluginManager().registerEvents(new SignListener(signsManager, playerShopManager, playerOpenShopGUI), this);
         Objects.requireNonNull(getCommand("marketcraftdebug")).setExecutor(new DebugManager.ToggleDebugCommand());
-        Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler(playerVaultManager, playerShopManager, this, playerOpenShopGUI, signsManager));
+        Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler(playerVaultManager, playerShopManager, this, playerOpenShopGUI, signsManager, shopLockManager, vaultLockManager));
     }
 
     /**

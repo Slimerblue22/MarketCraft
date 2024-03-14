@@ -10,7 +10,9 @@
 package com.marketcraft.gui;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
+import com.marketcraft.locks.ShopLockManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -35,6 +37,7 @@ import static com.marketcraft.util.GUIUtils.createPlayerHead;
  * Employs PlayerVaultManager to manage and display the stock availability of items in the shop.
  * Leverages GUIUtils for creating custom inventory items and layouts in the GUI.
  * Interacts with MarketCraft for plugin-specific context and information.
+ * It also uses both ShopLockManager and VaultLockManager for locking operations.
  */
 public class PlayerOpenShopGUI {
     private static final int INVENTORY_SIZE = 27;
@@ -48,11 +51,15 @@ public class PlayerOpenShopGUI {
     public static final int OWNER_HEAD_SLOT = 4;
     private final PlayerShopManager playerShopManager;
     private final PlayerVaultManager playerVaultManager;
+    private final ShopLockManager shopLockManager;
+    private final VaultLockManager vaultLockManager;
     private final MarketCraft marketCraft;
 
-    public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
+    public PlayerOpenShopGUI(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager, MarketCraft marketCraft) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;
+        this.shopLockManager = shopLockManager;
+        this.vaultLockManager = vaultLockManager;
         this.marketCraft = marketCraft;
     }
 
@@ -65,6 +72,11 @@ public class PlayerOpenShopGUI {
      * @param shopName      The name of the shop that the player is accessing.
      */
     public void openPlayerShopGUI(Player player, UUID shopOwnerUUID, String shopName) {
+        // Check if the shop is locked
+        if (shopLockManager.isLocked(shopOwnerUUID, shopName)) {
+            player.sendMessage(Component.text("This shop is currently being modified. Please try again later."));
+            return;
+        }
         // If the method returns null, we can assume the shop does not exist or is invalid
         ItemStack[] shopItems = playerShopManager.getPlayerShopItems(shopOwnerUUID, shopName);
         if (shopItems == null) {
@@ -101,5 +113,7 @@ public class PlayerOpenShopGUI {
         shopInventory.setItem(OWNER_HEAD_SLOT, ownerIdentifier);
         // Setup is done, create the inventory
         player.openInventory(shopInventory);
+        // After setting up the shop GUI, lock the vault for the shop
+        vaultLockManager.lockVault(shopOwnerUUID, shopName, player.getUniqueId());
     }
 }

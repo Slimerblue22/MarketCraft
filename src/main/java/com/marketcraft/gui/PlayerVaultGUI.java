@@ -10,6 +10,7 @@
 package com.marketcraft.gui;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.locks.ShopLockManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -33,16 +34,19 @@ import static com.marketcraft.util.GUIUtils.createNamedItem;
  * This class is responsible for the creation, display, and interaction of the vault inventory
  * for players, which is a key component of the plugin's shop system. It utilizes the PlayerVaultManager
  * to interact with the underlying data and the MarketCraft plugin instance for additional context.
+ * It also uses ShopLockManager for locking operations.
  */
 public class PlayerVaultGUI {
     private final PlayerVaultManager playerVaultManager;
+    private final ShopLockManager shopLockManager;
     private final MarketCraft marketCraft;
     private static final int VAULT_SIZE = 54;
     private static final int[] DIVIDER_LINE_SLOTS = {13, 22, 31, 40, 49};
     private static final int INFO_BOOK_SLOT = 4;
 
-    public PlayerVaultGUI(PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
+    public PlayerVaultGUI(PlayerVaultManager playerVaultManager, ShopLockManager shopLockManager, MarketCraft marketCraft) {
         this.playerVaultManager = playerVaultManager;
+        this.shopLockManager = shopLockManager;
         this.marketCraft = marketCraft;
     }
 
@@ -65,6 +69,8 @@ public class PlayerVaultGUI {
             player.sendMessage(Component.text("An unexpected error has occurred, please wait a moment then try again."));
             return;
         }
+        // Lock the shop linked to this vault
+        shopLockManager.lockShop(playerUUID, shopName, playerUUID);
         Inventory vaultInventory = Bukkit.createInventory(player, VAULT_SIZE, Component.text("Your Vault"));
         ItemStack infoBook = new ItemStack(Material.KNOWLEDGE_BOOK);
         ItemMeta meta = infoBook.getItemMeta();

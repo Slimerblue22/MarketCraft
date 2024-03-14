@@ -10,6 +10,7 @@
 package com.marketcraft.listeners;
 
 import com.marketcraft.MarketCraft;
+import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.ShopTransaction;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -18,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,17 +34,20 @@ import java.util.UUID;
  * This class is responsible for processing player interactions with the shop GUI, such as purchase confirmations and cancellations.
  * <p>
  * Utilizes ShopTransaction to handle the logic of processing a shop transaction, including item transfers and stock management.
+ * Utilizes VaultLockManager to handle unlocking the vault.
  * Interacts with MarketCraft for plugin-specific context and to access necessary data keys for transaction processing.
  */
 public class OpenShopListener implements Listener {
     private final ShopTransaction shopTransaction;
+    private final VaultLockManager vaultLockManager;
     private final MarketCraft marketCraft;
     private static final int CONFIRM_SLOT = 16;
     private static final int CANCEL_SLOT = 22;
     private static final int OWNER_HEAD_SLOT = 4;
 
-    public OpenShopListener(PlayerVaultManager playerVaultManager, MarketCraft marketCraft) {
+    public OpenShopListener(PlayerVaultManager playerVaultManager, VaultLockManager vaultLockManager, MarketCraft marketCraft) {
         this.shopTransaction = new ShopTransaction(playerVaultManager);
+        this.vaultLockManager = vaultLockManager;
         this.marketCraft = marketCraft;
     }
 
@@ -77,6 +82,35 @@ public class OpenShopListener implements Listener {
                 shopTransaction.processTransaction(player, event.getInventory(), shopOwnerUUID, shopName);
             } else if (clickedSlot == CANCEL_SLOT) { // Close button slot
                 player.closeInventory();
+            }
+        }
+    }
+
+    /**
+     * Handles the event when a player closes the shop inventory.
+     * This method is invoked whenever a player who opened the shop interface closes it.
+     * It ensures the proper unlocking of the vault associated with the shop, maintaining the integrity and security
+     * of the vault content. The method retrieves the necessary shop and player information from the inventory metadata
+     * to correctly identify which vault needs to be unlocked.
+     *
+     * @param event The inventory close event that contains details about the player closing the shop inventory.
+     */
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        InventoryHolder holder = event.getInventory().getHolder();
+        if (holder instanceof Player player && event.getView().title().equals(Component.text("Shop"))) {
+            // Retrieve the shop owner's UUID and shop name from the inventory
+            ItemStack ownerIdentifier = event.getInventory().getItem(OWNER_HEAD_SLOT);
+            if (ownerIdentifier != null && ownerIdentifier.hasItemMeta()) {
+                ItemMeta meta = ownerIdentifier.getItemMeta();
+                PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+                NamespacedKey ownerKey = new NamespacedKey(marketCraft, "shopOwnerUUID");
+                String uuidString = dataContainer.get(ownerKey, PersistentDataType.STRING);
+                UUID shopOwnerUUID = UUID.fromString(Objects.requireNonNull(uuidString));
+                NamespacedKey shopNameKey = new NamespacedKey(marketCraft, "shopName");
+                String shopName = dataContainer.get(shopNameKey, PersistentDataType.STRING);
+                // Unlock the vault
+                vaultLockManager.unlockVault(shopOwnerUUID, shopName, player.getUniqueId());
             }
         }
     }
