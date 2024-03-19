@@ -81,7 +81,6 @@ public class PlayerShopManager {
      * @param shopName   The name of the shop.
      * @return An array of ItemStacks containing the selling and charging items, or null if the shop or items do not exist.
      */
-
     public ItemStack[] getPlayerShopItems(UUID playerUUID, String shopName) {
         String basePath = "shops." + shopName;
         File playerShopFile = new File(shopsFolder, playerUUID + ".yml");
