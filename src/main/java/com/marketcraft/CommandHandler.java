@@ -52,7 +52,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final HelpCommand helpCommand;
     private final VersionCommand versionCommand;
     private final OpenVaultCommand openVaultCommand;
-    private final RemoveVaultCommand removeVaultCommand;
     private final ListVaultsCommand listVaultsCommand;
     private final CreateShopCommand createShopCommand;
     private final RemoveShopCommand removeShopCommand;
@@ -60,16 +59,15 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final OpenShopCommand openShopCommand;
     private final CreateSignCommand createSignCommand;
     private final RemoveSignCommand removeSignCommand;
-    private static final String[] COMMANDS = {"createshop", "createsign", "help", "listshops", "listvaults", "openshop", "openvault", "removeshop", "removesign", "removevault", "version"};
+    private static final String[] COMMANDS = {"createshop", "createsign", "help", "listshops", "listvaults", "openshop", "openvault", "removeshop", "removesign", "version"};
 
     public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI, SignsManager signsManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager) {
-        this.removeVaultCommand = new RemoveVaultCommand(playerVaultManager);
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager, playerShopManager, shopLockManager, vaultLockManager, marketCraft);
         this.listVaultsCommand = new ListVaultsCommand(playerVaultManager);
         this.createShopCommand = new CreateShopCommand(playerShopManager);
-        this.removeShopCommand = new RemoveShopCommand(playerShopManager);
+        this.removeShopCommand = new RemoveShopCommand(playerShopManager, playerVaultManager);
         this.listShopsCommand = new ListShopsCommand(playerShopManager);
         this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);
         this.createSignCommand = new CreateSignCommand(playerShopManager, signsManager);
@@ -107,7 +105,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
             case "createsign" -> createSignCommand.handleCreateSignCommand(sender, args);
             case "removesign" -> removeSignCommand.handleRemoveSignCommand(sender, args);
-            case "removevault" -> removeVaultCommand.handleRemoveVaultCommand(sender, args);
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args);
             case "listvaults" -> listVaultsCommand.handleListVaultsCommand(sender, args); // Needs marketcraft.admin
             case "listshops" -> listShopsCommand.handleListShopsCommand(sender, args); // Needs marketcraft.admin

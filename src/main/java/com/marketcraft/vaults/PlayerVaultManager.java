@@ -11,6 +11,7 @@ package com.marketcraft.vaults;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -320,6 +321,39 @@ public class PlayerVaultManager {
         } catch (IOException e) {
             Bukkit.getLogger().log(Level.WARNING, "An error has occurred while saving " + player.getName() + "'s vault: " + shopName, e);
         }
+    }
+
+    /**
+     * Checks if a player's vault is empty for a specific shop.
+     *
+     * @param uuidString The UUID of the player as a string.
+     * @param vaultName  The name of the vault.
+     * @return True if the vault is empty, false if it contains any items.
+     */
+    public boolean isPlayerVaultEmpty(String uuidString, String vaultName) {
+        UUID playerUUID = UUID.fromString(uuidString);
+        File playerVaultFile = new File(vaultsFolder, playerUUID + ".yml");
+        if (!playerVaultFile.exists()) {
+            return true; // Vault file does not exist, hence empty
+        }
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(playerVaultFile);
+        String basePath = "vault." + vaultName;
+        if (!config.contains(basePath)) {
+            return true; // Vault does not exist, hence empty
+        }
+        ConfigurationSection vaultSection = config.getConfigurationSection(basePath);
+        if (vaultSection == null || vaultSection.getKeys(false).isEmpty()) {
+            return true; // Vault exists but has no items, hence empty
+        }
+        for (String key : vaultSection.getKeys(false)) {
+            if (!GUI_SLOTS.contains(Integer.parseInt(key.replace("slot_", "")))) {
+                ItemStack item = ItemStack.deserialize(Objects.requireNonNull(vaultSection.getConfigurationSection(key)).getValues(false));
+                if (item.getType() != Material.AIR) {
+                    return false; // Found a non-empty slot, hence not empty
+                }
+            }
+        }
+        return true; // No non-empty slots found, hence empty
     }
 
     /**
