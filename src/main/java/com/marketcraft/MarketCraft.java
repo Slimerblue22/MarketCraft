@@ -76,10 +76,16 @@ public final class MarketCraft extends JavaPlugin {
     }
 
     public static int getShopLimit() {
+        if (shopLimit == -1) {
+            return Integer.MAX_VALUE;
+        }
         return shopLimit;
     }
 
     public static int getSignLimit() {
+        if (signLimit == -1) {
+            return Integer.MAX_VALUE;
+        }
         return signLimit;
     }
 }
