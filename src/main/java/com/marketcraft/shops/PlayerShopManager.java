@@ -104,10 +104,6 @@ public class PlayerShopManager {
         return new ItemStack[]{itemToSell, itemToCharge};
     }
 
-    public File[] listAllShops() {
-        return shopsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
-    }
-
     /**
      * Deletes a player's shop configuration from the YAML file.
      * Returns a boolean indicating the success of the deletion process.

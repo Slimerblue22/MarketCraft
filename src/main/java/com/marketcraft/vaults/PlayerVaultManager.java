@@ -283,15 +283,6 @@ public class PlayerVaultManager {
     }
 
     /**
-     * Lists all existing player vault files.
-     *
-     * @return An array of files representing the player vaults.
-     */
-    public File[] listAllVaults() {
-        return vaultsFolder.listFiles((dir, name) -> name.endsWith(".yml"));
-    }
-
-    /**
      * Saves the contents of a player's vault to a file.
      *
      * @param player         The player whose vault is being saved.
