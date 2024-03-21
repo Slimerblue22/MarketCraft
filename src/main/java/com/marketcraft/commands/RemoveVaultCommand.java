@@ -31,24 +31,35 @@ public class RemoveVaultCommand {
 
     /**
      * Handles the 'removevault' subcommand of the /marketcraft command set.
-     * This method allows players to remove their own vaults and administrators to remove any player's vault.
-     * It is based on the player's name and the vault's name. The command checks if the sender has the required
-     * permissions or is the owner of the vault, and validates the provided player name and vault name before
-     * attempting to remove the specified vault. It provides feedback about the outcome of the action,
-     * whether successful or not.
+     * This method allows players to remove their own vaults or administrators to remove any player's vault.
+     * The command expects the vault's name as the first argument and optionally the player's name as the second argument.
+     * If no player name is provided and the command is issued by a player, it defaults to the name of the command sender.
+     * The command checks if the sender has the required permissions or is the owner of the vault, and validates the
+     * provided vault name and player name before attempting to remove the specified vault. It provides feedback about
+     * the outcome of the action, whether successful or not.
      *
-     * @param sender The sender of the command, expected to be a player or an administrator.
-     * @param args   The arguments provided with the command, including the player's name and the vault's name.
+     * @param sender The sender of the command, which can be a player or the console.
+     * @param args   The arguments provided with the command. The first argument is the vault's name and the second
+     *               (optional) argument is the player's name. If only the vault name is provided and the sender is a player,
+     *               the sender's name is used as the player's name.
      * @return true if the vault is successfully removed, false if there is an error such as lack of permission,
      * incorrect usage, or if the specified vault does not exist.
      */
     public boolean handleRemoveVaultCommand(CommandSender sender, String[] args) {
-        if (args.length != 3) {
-            sender.sendMessage(Component.text("Usage: /marketcraft removevault <playerName> <vaultName>"));
+        if (args.length < 2 || args.length > 3) {
+            sender.sendMessage(Component.text("Usage: /marketcraft removevault <vaultName> [playerName]"));
             return false;
         }
-        String playerName = args[1];
-        String vaultName = args[2];
+        String vaultName = args[1];
+        String playerName;
+        if (args.length == 3) {
+            playerName = args[2];
+        } else if (sender instanceof Player) {
+            playerName = sender.getName();
+        } else {
+            sender.sendMessage(Component.text("Console must specify a player name."));
+            return false;
+        }
         try {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
             UUID playerUUID = player.getUniqueId();

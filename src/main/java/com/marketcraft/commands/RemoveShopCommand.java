@@ -31,24 +31,35 @@ public class RemoveShopCommand {
 
     /**
      * Handles the 'removeshop' subcommand of the /marketcraft command set.
-     * This method allows players to remove their own shops and administrators to remove any player's shop.
-     * It is based on the player's name and the shop's name. The command checks if the sender has the required
-     * permissions or is the owner of the shop, and validates the provided player name and shop name before
-     * attempting to remove the associated shop. It provides feedback about the outcome of the action,
-     * whether successful or not.
+     * This method allows players to remove their own shops or administrators to remove any player's shop.
+     * The command expects the shop's name as the first argument and optionally the player's name as the second argument.
+     * If no player name is provided and the command is issued by a player, it defaults to the name of the command sender.
+     * The command checks if the sender has the required permissions or is the owner of the shop, and validates the
+     * provided shop name and player name before attempting to remove the associated shop. It provides feedback about
+     * the outcome of the action, whether successful or not.
      *
-     * @param sender The sender of the command, expected to be a player or an administrator.
-     * @param args   The arguments provided with the command, including the player's name and the shop's name.
+     * @param sender The sender of the command, which can be a player or the console.
+     * @param args   The arguments provided with the command. The first argument is the shop's name and the second
+     *               (optional) argument is the player's name. If only the shop name is provided and the sender is a player,
+     *               the sender's name is used as the player's name.
      * @return true if the shop is successfully removed, false if there is an error such as lack of permission,
      * incorrect usage, or if the shop does not exist.
      */
     public boolean handleRemoveShopCommand(CommandSender sender, String[] args) {
-        if (args.length != 3) {
-            sender.sendMessage(Component.text("Usage: /marketcraft removeshop <playerName> <shopName>"));
+        if (args.length < 2 || args.length > 3) {
+            sender.sendMessage(Component.text("Usage: /marketcraft removeshop <shopName> [playerName]"));
             return false;
         }
-        String playerName = args[1];
-        String shopName = args[2];
+        String shopName = args[1];
+        String playerName;
+        if (args.length == 3) {
+            playerName = args[2];
+        } else if (sender instanceof Player) {
+            playerName = sender.getName();
+        } else {
+            sender.sendMessage(Component.text("Console must specify a player name."));
+            return false;
+        }
         try {
             OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
             UUID playerUUID = player.getUniqueId();
