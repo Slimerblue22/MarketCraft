@@ -11,6 +11,9 @@ commands:
   marketcraft:
     description: Command for controlling most of the plugins functions
     aliases: [mc]
+  marketcraftadmin:
+    description: Command for controlling admin functions
+    aliases: [mca]
 permissions:
   marketcraft.debug:
     description: Permission for debug commands (does NOT include access to admin commands)
