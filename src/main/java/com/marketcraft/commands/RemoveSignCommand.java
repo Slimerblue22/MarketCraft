@@ -21,7 +21,6 @@ import static com.marketcraft.util.SignUtils.isSign;
 
 /**
  * Command handler for the 'removesign' subcommand within the MarketCraft plugin.
- * Utilizes SignsManager for managing sign links to shops.
  */
 public class RemoveSignCommand {
     private final SignsManager signsManager;

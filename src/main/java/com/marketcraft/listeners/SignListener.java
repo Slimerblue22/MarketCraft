@@ -32,10 +32,6 @@ import static com.marketcraft.util.SignUtils.isSign;
  * This class manages interactions and events related to signs that are linked to player shops.
  * It handles player actions on signs, such as breaking or interacting with them, and ensures proper
  * management of these signs within the context of the plugin's functionality.
- * <p>
- * The class uses SignsManager to manage data associated with each sign and PlayerShopManager to check
- * the existence and details of player shops linked to the signs. Additionally, it integrates with
- * PlayerOpenShopGUI to facilitate opening of shop interfaces through sign interactions.
  */
 public class SignListener implements Listener {
     private final SignsManager signsManager;

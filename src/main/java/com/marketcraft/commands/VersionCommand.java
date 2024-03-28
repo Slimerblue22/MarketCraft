@@ -16,7 +16,6 @@ import org.bukkit.command.CommandSender;
 
 /**
  * Command handler for the 'version' subcommand within the MarketCraft plugin.
- * Provides version information and plugin details.
  */
 public class VersionCommand {
 

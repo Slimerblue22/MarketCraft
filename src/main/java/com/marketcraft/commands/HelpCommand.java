@@ -14,7 +14,6 @@ import org.bukkit.command.CommandSender;
 
 /**
  * Command handler for the 'help' subcommand within the MarketCraft plugin.
- * Provides help and guidance to players on plugin usage.
  */
 public class HelpCommand {
 

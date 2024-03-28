@@ -20,7 +20,6 @@ import java.util.UUID;
 
 /**
  * Command handler for the 'openshop' subcommand within the MarketCraft plugin.
- * Utilizes PlayerOpenShopGUI for opening player shop interfaces.
  */
 public class OpenShopCommand {
     private final PlayerOpenShopGUI playerOpenShopGUI;

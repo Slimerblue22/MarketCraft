@@ -21,7 +21,6 @@ import java.util.UUID;
 
 /**
  * Command handler for the `removeshop` subcommand within the MarketCraft plugin.
- * Utilizes PlayerShopManager for shop removal operations.
  */
 public class RemoveShopCommand {
     private final PlayerShopManager playerShopManager;

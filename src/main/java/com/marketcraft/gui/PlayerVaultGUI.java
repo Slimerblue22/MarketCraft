@@ -32,9 +32,7 @@ import static com.marketcraft.util.GUIUtils.createNamedItem;
 /**
  * Manages the graphical user interface (GUI) for player vaults in the MarketCraft plugin.
  * This class is responsible for the creation, display, and interaction of the vault inventory
- * for players, which is a key component of the plugin's shop system. It utilizes the PlayerVaultManager
- * to interact with the underlying data and the MarketCraft plugin instance for additional context.
- * It also uses ShopLockManager for locking operations.
+ * for players, which is a key component of the plugin's shop system.
  */
 public class PlayerVaultGUI {
     private final PlayerVaultManager playerVaultManager;

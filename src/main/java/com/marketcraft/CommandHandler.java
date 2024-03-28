@@ -73,8 +73,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     /**
      * Executes the given /marketcraft command.
      * This method handles the primary command logic for the /marketcraft command set.
-     * All commands require the 'marketcraft.use' permission. Some specific subcommands
-     * require additional permissions, such as 'marketcraft.admin'.
+     * All commands require the 'marketcraft.use' permission.
      *
      * @param sender  The sender of the command, typically a player or the console.
      * @param command The command being executed.

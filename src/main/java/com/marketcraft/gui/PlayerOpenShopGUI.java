@@ -32,12 +32,6 @@ import static com.marketcraft.util.GUIUtils.createPlayerHead;
 /**
  * Manages the graphical user interface (GUI) for players to open and interact with shops in the MarketCraft plugin.
  * This class is responsible for creating and displaying the shop inventory interface, enabling players to view items for sale, understand their costs, and check available stock.
- * <p>
- * Utilizes PlayerShopManager to retrieve information about items in a specific player's shop, including details such as item types and prices.
- * Employs PlayerVaultManager to manage and display the stock availability of items in the shop.
- * Leverages GUIUtils for creating custom inventory items and layouts in the GUI.
- * Interacts with MarketCraft for plugin-specific context and information.
- * It also uses both ShopLockManager and VaultLockManager for locking operations.
  */
 public class PlayerOpenShopGUI {
     private static final int INVENTORY_SIZE = 27;

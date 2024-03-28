@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 
 /**
  * Command handler for the 'createshop' subcommand within the MarketCraft plugin.
- * Utilizes PlayerShopSetupGUI for shop setup interactions.
  */
 public class CreateShopCommand {
     private final PlayerShopSetupGUI playerShopSetupGUI;

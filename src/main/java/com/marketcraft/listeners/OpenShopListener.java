@@ -32,10 +32,6 @@ import java.util.UUID;
 /**
  * Listener class for handling inventory interactions within the MarketCraft plugin's shop interface.
  * This class is responsible for processing player interactions with the shop GUI, such as purchase confirmations and cancellations.
- * <p>
- * Utilizes ShopTransaction to handle the logic of processing a shop transaction, including item transfers and stock management.
- * Utilizes VaultLockManager to handle unlocking the vault.
- * Interacts with MarketCraft for plugin-specific context and to access necessary data keys for transaction processing.
  */
 public class OpenShopListener implements Listener {
     private final ShopTransaction shopTransaction;

@@ -27,7 +27,6 @@ import static com.marketcraft.util.SignUtils.isValidMarketcraftSign;
 
 /**
  * Command handler for the 'createsign' subcommand within the MarketCraft plugin.
- * Utilizes PlayerShopManager and SignsManager for sign creation and management.
  */
 public class CreateSignCommand {
     private final PlayerShopManager playerShopManager;

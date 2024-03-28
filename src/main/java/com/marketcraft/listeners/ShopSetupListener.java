@@ -34,7 +34,6 @@ import java.util.Objects;
  * Listener for handling the shop setup interface in the MarketCraft plugin.
  * This class processes player interactions within the shop setup inventory,
  * managing the configuration and confirmation of new shops.
- * It leverages PlayerShopManager to save and manage the shop details as configured by the player.
  * <p>
  * The class handles the retrieval of items from the setup interface upon inventory closure
  * and processes various inventory click events to ensure proper setup actions are taken.

@@ -43,8 +43,6 @@ import java.util.*;
  * - Preventing certain global and menu-specific actions within the inventory to maintain consistency and prevent errors.
  * <p>
  * It utilizes sets of predefined slots for selling and buying items to maintain order in the vault inventory.
- * The class works closely with the PlayerVaultManager and PlayerShopManager to handle vault-specific and shop-specific data.
- * The class also utilizes ShopLockManager to handle unlocking the shop.
  */
 public class VaultInventoryListener implements Listener {
     private final PlayerVaultManager playerVaultManager;

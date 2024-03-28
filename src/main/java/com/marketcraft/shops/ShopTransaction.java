@@ -25,9 +25,6 @@ import static com.marketcraft.util.GUIUtils.createNamedItem;
  * Handles transactions for player shops in the MarketCraft plugin.
  * This class manages the logic for buying and selling items in a player's shop,
  * including checking stock availability, updating inventory, and managing item exchange between buyer and shop.
- * <p>
- * Utilizes PlayerVaultManager to interact with the players' vaults for stock and space verification.
- * Also responsible for updating the stock indicators in the shop's GUI based on the transaction outcomes.
  */
 public class ShopTransaction {
     private final PlayerVaultManager playerVaultManager;

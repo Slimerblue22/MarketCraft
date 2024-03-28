@@ -23,7 +23,6 @@ import java.util.UUID;
 
 /**
  * Command handler for the 'openvault' subcommand within the MarketCraft plugin.
- * Utilizes PlayerVaultManager, PlayerVaultGUI, VaultLockManager, and PlayerShopManager for vault access and management.
  */
 public class OpenVaultCommand {
     private final PlayerVaultManager playerVaultManager;
