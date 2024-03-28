@@ -9,6 +9,8 @@
 
 package com.marketcraft.commands;
 
+import com.marketcraft.locks.ShopLockManager;
+import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
@@ -24,10 +26,14 @@ import java.util.UUID;
 public class RemoveShopCommand {
     private final PlayerShopManager playerShopManager;
     private final PlayerVaultManager playerVaultManager;
+    private final ShopLockManager shopLockManager;
+    private final VaultLockManager vaultLockManager;
 
-    public RemoveShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager) {
+    public RemoveShopCommand(PlayerShopManager playerShopManager, PlayerVaultManager playerVaultManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager) {
         this.playerShopManager = playerShopManager;
         this.playerVaultManager = playerVaultManager;
+        this.shopLockManager = shopLockManager;
+        this.vaultLockManager = vaultLockManager;
     }
 
     /**
@@ -58,6 +64,14 @@ public class RemoveShopCommand {
         try {
             if (!playerVaultManager.isPlayerVaultEmpty(playerUUIDString, shopName)) {
                 sender.sendMessage(Component.text("Cannot remove shop '" + shopName + "' as its vault is not empty."));
+                return false;
+            }
+            if (vaultLockManager.isLocked(playerUUID, shopName)) {
+                sender.sendMessage(Component.text("Cannot remove shop '" + shopName + "' as its vault is currently locked."));
+                return false;
+            }
+            if (shopLockManager.isLocked(playerUUID, shopName)) {
+                sender.sendMessage(Component.text("Cannot remove shop '" + shopName + "' as its shop is currently locked."));
                 return false;
             }
             boolean shopRemoved = playerShopManager.deletePlayerShop(playerUUIDString, shopName);
