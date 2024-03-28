@@ -66,7 +66,7 @@ public class SignsManager {
 
     /**
      * Removes a link between a sign and a shop.
-     * Validates the player's ownership or admin permission before unlinking.
+     * Validates the player's ownership before unlinking.
      * Updates the configuration file to reflect the removal of the link.
      *
      * @param signBlock The block representing the sign.
@@ -78,8 +78,8 @@ public class SignsManager {
         if (signDataOptional.isPresent()) {
             Map<String, String> signData = signDataOptional.get();
             UUID ownerUUID = UUID.fromString(signData.get("owner"));
-            // Check if the player is the owner or has the admin permission
-            if (playerUUID.equals(ownerUUID) || player.hasPermission("marketcraft.admin")) {
+            // Check if the player is the owner
+            if (playerUUID.equals(ownerUUID)) {
                 Location signLocation = signBlock.getLocation();
                 File signsFile = new File(signsFolder, "signs.yml");
                 YamlConfiguration config = YamlConfiguration.loadConfiguration(signsFile);
@@ -94,6 +94,34 @@ public class SignsManager {
                 }
             } else {
                 player.sendMessage(Component.text("You do not have permission to remove this sign link."));
+            }
+        } else {
+            player.sendMessage(Component.text("No sign link found at this location."));
+        }
+    }
+
+    /**
+     * Removes a link between a sign and a shop without validating the player's ownership.
+     * This version is intended for administrative use or situations where ownership validation is not required.
+     * Updates the configuration file to reflect the removal of the link.
+     *
+     * @param signBlock The block representing the sign.
+     * @param player    The player (or administrator) attempting to remove the sign link.
+     */
+    public void adminRemoveSignLink(Block signBlock, Player player) {
+        Optional<Map<String, String>> signDataOptional = getSignData(signBlock);
+        if (signDataOptional.isPresent()) {
+            Location signLocation = signBlock.getLocation();
+            File signsFile = new File(signsFolder, "signs.yml");
+            YamlConfiguration config = YamlConfiguration.loadConfiguration(signsFile);
+            String locationKey = getLocationKey(signLocation);
+            config.set(locationKey, null); // Remove the sign link
+            try {
+                config.save(signsFile);
+                player.sendMessage(Component.text("Sign link successfully removed."));
+            } catch (IOException e) {
+                Bukkit.getLogger().log(Level.WARNING, "An error occurred while removing sign data: ", e);
+                player.sendMessage(Component.text("An error occurred while removing sign data. Please try again later."));
             }
         } else {
             player.sendMessage(Component.text("No sign link found at this location."));
