@@ -10,11 +10,9 @@
 package com.marketcraft;
 
 import com.marketcraft.commands.AdminRemoveShopCommand;
-import com.marketcraft.commands.AdminRemoveSignCommand;
 import com.marketcraft.locks.ShopLockManager;
 import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
-import com.marketcraft.signs.SignsManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -34,13 +32,11 @@ import java.util.List;
  * operations.
  */
 public class AdminCommandHandler implements CommandExecutor, TabCompleter {
-    private static final String[] COMMANDS = {"removeshop", "removesign"};
+    private static final String[] COMMANDS = {"removeshop"};
     private final AdminRemoveShopCommand adminRemoveShopCommand;
-    private final AdminRemoveSignCommand adminRemoveSignCommand;
 
-    public AdminCommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager, SignsManager signsManager) {
+    public AdminCommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager) {
         this.adminRemoveShopCommand = new AdminRemoveShopCommand(playerShopManager, playerVaultManager, shopLockManager, vaultLockManager);
-        this.adminRemoveSignCommand = new AdminRemoveSignCommand(signsManager);
     }
 
     /**
@@ -65,7 +61,6 @@ public class AdminCommandHandler implements CommandExecutor, TabCompleter {
         String subCommand = args[0].toLowerCase();
         return switch (subCommand) {
             case "removeshop" -> adminRemoveShopCommand.handleAdminRemoveShopCommand(sender, args);
-            case "removesign" -> adminRemoveSignCommand.handleAdminRemoveSignCommand(sender, args);
             default -> {
                 handleUnknownCommand(sender);
                 yield false;

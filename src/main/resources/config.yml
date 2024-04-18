@@ -4,8 +4,3 @@
 # Default value: 5
 # Set to -1 for unlimited
 shopLimit: 5
-
-# Default limit for the number of shop signs a player can have
-# Default value: 5
-# Set to -1 for unlimited
-signLimit: 5

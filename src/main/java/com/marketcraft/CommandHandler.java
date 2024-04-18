@@ -14,7 +14,6 @@ import com.marketcraft.gui.PlayerOpenShopGUI;
 import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.locks.ShopLockManager;
-import com.marketcraft.signs.SignsManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
@@ -55,19 +54,15 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     private final CreateShopCommand createShopCommand;
     private final RemoveShopCommand removeShopCommand;
     private final OpenShopCommand openShopCommand;
-    private final CreateSignCommand createSignCommand;
-    private final RemoveSignCommand removeSignCommand;
-    private static final String[] COMMANDS = {"createshop", "createsign", "help", "openshop", "openvault", "removeshop", "removesign", "version"};
+    private static final String[] COMMANDS = {"createshop", "help", "openshop", "openvault", "removeshop", "version"};
 
-    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI, SignsManager signsManager, ShopLockManager shopLockManager, VaultLockManager vaultLockManager) {
+    public CommandHandler(PlayerVaultManager playerVaultManager, PlayerShopManager playerShopManager, MarketCraft marketCraft, PlayerOpenShopGUI playerOpenShopGUI, ShopLockManager shopLockManager, VaultLockManager vaultLockManager) {
         this.helpCommand = new HelpCommand();
         this.versionCommand = new VersionCommand();
         this.openVaultCommand = new OpenVaultCommand(playerVaultManager, playerShopManager, shopLockManager, vaultLockManager, marketCraft);
         this.createShopCommand = new CreateShopCommand(playerShopManager);
         this.removeShopCommand = new RemoveShopCommand(playerShopManager, playerVaultManager, shopLockManager, vaultLockManager);
         this.openShopCommand = new OpenShopCommand(playerOpenShopGUI);
-        this.createSignCommand = new CreateSignCommand(playerShopManager, signsManager);
-        this.removeSignCommand = new RemoveSignCommand(signsManager);
     }
 
     /**
@@ -98,8 +93,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             case "openvault" -> openVaultCommand.handleOpenVaultCommand(sender, args);
             case "createshop" -> createShopCommand.handleCreateShopCommand(sender, args);
             case "openshop" -> openShopCommand.handleOpenShopCommand(sender, args);
-            case "createsign" -> createSignCommand.handleCreateSignCommand(sender, args);
-            case "removesign" -> removeSignCommand.handleRemoveSignCommand(sender, args);
             case "removeshop" -> removeShopCommand.handleRemoveShopCommand(sender, args);
             default -> {
                 handleUnknownCommand(sender);

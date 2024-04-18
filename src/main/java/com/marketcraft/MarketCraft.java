@@ -12,12 +12,10 @@ package com.marketcraft;
 import com.marketcraft.gui.PlayerOpenShopGUI;
 import com.marketcraft.listeners.OpenShopListener;
 import com.marketcraft.listeners.ShopSetupListener;
-import com.marketcraft.listeners.SignListener;
 import com.marketcraft.listeners.VaultInventoryListener;
 import com.marketcraft.locks.VaultLockManager;
 import com.marketcraft.shops.PlayerShopManager;
 import com.marketcraft.locks.ShopLockManager;
-import com.marketcraft.signs.SignsManager;
 import com.marketcraft.util.DebugManager;
 import com.marketcraft.vaults.PlayerVaultManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -33,7 +31,6 @@ import java.util.Objects;
 public final class MarketCraft extends JavaPlugin {
     private static String pluginVersion;
     private static int shopLimit;
-    private static int signLimit;
 
     /**
      * Initializes the plugin when it is enabled.
@@ -44,22 +41,19 @@ public final class MarketCraft extends JavaPlugin {
         // Plugin startup logic
         saveDefaultConfig();
         shopLimit = getConfig().getInt("shopLimit", 5);
-        signLimit = getConfig().getInt("signLimit", 5);
         //noinspection deprecation
         pluginVersion = this.getDescription().getVersion();
         ShopLockManager shopLockManager = new ShopLockManager();
         VaultLockManager vaultLockManager = new VaultLockManager();
         PlayerVaultManager playerVaultManager = new PlayerVaultManager(getDataFolder());
         PlayerShopManager playerShopManager = new PlayerShopManager(getDataFolder());
-        SignsManager signsManager = new SignsManager(getDataFolder());
         PlayerOpenShopGUI playerOpenShopGUI = new PlayerOpenShopGUI(playerShopManager, playerVaultManager, shopLockManager, vaultLockManager, this);
         getServer().getPluginManager().registerEvents(new VaultInventoryListener(playerVaultManager, playerShopManager, shopLockManager, this), this);
         getServer().getPluginManager().registerEvents(new ShopSetupListener(playerShopManager), this);
         getServer().getPluginManager().registerEvents(new OpenShopListener(playerVaultManager, vaultLockManager, this), this);
-        getServer().getPluginManager().registerEvents(new SignListener(signsManager, playerShopManager, playerOpenShopGUI), this);
         Objects.requireNonNull(getCommand("marketcraftdebug")).setExecutor(new DebugManager.ToggleDebugCommand());
-        Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler(playerVaultManager, playerShopManager, this, playerOpenShopGUI, signsManager, shopLockManager, vaultLockManager));
-        Objects.requireNonNull(getCommand("marketcraftadmin")).setExecutor(new AdminCommandHandler(playerVaultManager, playerShopManager, shopLockManager, vaultLockManager, signsManager));
+        Objects.requireNonNull(getCommand("marketcraft")).setExecutor(new CommandHandler(playerVaultManager, playerShopManager, this, playerOpenShopGUI, shopLockManager, vaultLockManager));
+        Objects.requireNonNull(getCommand("marketcraftadmin")).setExecutor(new AdminCommandHandler(playerVaultManager, playerShopManager, shopLockManager, vaultLockManager));
     }
 
     /**
@@ -81,12 +75,5 @@ public final class MarketCraft extends JavaPlugin {
             return Integer.MAX_VALUE;
         }
         return shopLimit;
-    }
-
-    public static int getSignLimit() {
-        if (signLimit == -1) {
-            return Integer.MAX_VALUE;
-        }
-        return signLimit;
     }
 }
